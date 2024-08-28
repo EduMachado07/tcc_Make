@@ -1,3 +1,10 @@
------- 26/08 -------------
-criado aplicação react com vite
-imports: tailwind, react-router-dom
+------- 26/08 -------------
+criado aplicação react com vite;
+criado repositorio, add aplicação e comitado;
+imports: tailwind, react-router-dom;
+criado sistema de rotas;
+
+------- 27/08 ----------
+criado formulario para login;
+tudo pronto para integrar o backend;
+*nao estilizado*;
