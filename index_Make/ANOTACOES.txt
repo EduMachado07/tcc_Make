@@ -7,4 +7,4 @@ criado sistema de rotas;
 ------- 27/08 ----------
 criado formulario para login;
 tudo pronto para integrar o backend;
-*nao estilizado*;
+*nao estilizado

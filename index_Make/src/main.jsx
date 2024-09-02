@@ -11,6 +11,7 @@ import {
 // ------- paginas da aplicacao --------
 import App from "./App.jsx";
 import Login from "./pages/login.jsx";
+import Negocios from "./pages/negocios.jsx";
 
 const Rotas = () => {
 
@@ -29,6 +30,10 @@ const Rotas = () => {
     {
       path: "/cadastro",
       element: <App />,
+    },
+    {
+      path: "/negocios",
+      element: <Negocios />,
     },
   ]);
   return <RouterProvider router={routes} />;
