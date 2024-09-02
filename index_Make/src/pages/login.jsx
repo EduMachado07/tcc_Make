@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [erroEmail, setErro_Email] = useState(false);
-  const [erroSenha, setErro_Senha] = useState(false);
-  const navigate = useNavigate()
+  const [erroEmail, setErro_Email] = useState("");
+  const [erroSenha, setErro_Senha] = useState("");
+  const navigate = useNavigate();
   // INICIA PAGINA COM INPUT FOCADO
   const inputEmail = useRef(null);
   useEffect(() => {
@@ -18,22 +18,40 @@ const Login = () => {
 
   async function EnviarFormulario(event) {
     event.preventDefault();
+    // VERIFICA SE OS CAMPOS ESTAO PREENCHIDOS
+    setErro_Email("");
+    setErro_Senha("");
+
+    if (email === "" && senha === "") {
+      setErro_Email("campo email obrigatório");
+      setErro_Senha("campo senha obrigatório");
+      return
+    }
+    if (email === "" ) {
+      setErro_Email("campo email obrigatório");
+      return;
+    }
+    if (senha === "") {
+      setErro_Senha("campo senha obrigatório");
+      return;
+    }
     // CHAMADA API
     try {
       const res = await axios.get(
         "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/user"
       );
-      const user = res.data.find((user) => user.email === email)
+      const user = res.data.find((user) => user.email === email);
 
+      // VERIFICA NA API, SE AS INFORMACOES ESTAO CORRETAS
       if (!user) {
-        setErro_Email(true);
-        setErro_Senha(false);
+        setErro_Email("Email não encontrado ou incorreto");
+        setErro_Senha("");
       } else if (user.senha !== senha) {
-        setErro_Email(false);
-        setErro_Senha(true);
+        setErro_Email("");
+        setErro_Senha("Senha está incorreta");
       } else {
-        setErro_Email(false);
-        setErro_Senha(false);
+        setErro_Email("");
+        setErro_Senha("");
         navigate("/negocios");
       }
     } catch (error) {
@@ -98,7 +116,9 @@ const Login = () => {
               />
             </svg>
             <input
-              className={`w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1 ${erroEmail ? "border-red-500" : "border-slate-300"}`}
+              className={`w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1 ${
+                erroEmail ? "border-red-500" : "border-slate-300"
+              }`}
               type="email"
               name="email"
               id="email"
@@ -106,11 +126,8 @@ const Login = () => {
               placeholder="user@gmail.com"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              required
             />
-            {
-              erroEmail && <p className="text-sm text-red-500">Email não encontrado ou incorreto</p>
-            }
+            {erroEmail && <p className="text-sm text-red-500">{erroEmail}</p>}
           </div>
         </div>
         <div className="flex flex-col w-3/4 gap-1">
@@ -131,21 +148,25 @@ const Login = () => {
               />
             </svg>
             <input
-              className={`w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1 ${erroSenha ? "border-red-500" : "border-slate-300"}`}
+              className={`w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1 ${
+                erroSenha ? "border-red-500" : "border-slate-300"
+              }`}
               type="password"
               name="senha"
               placeholder="senha"
               value={senha}
               onChange={(event) => setSenha(event.target.value)}
-              required
             />
-            {
-              erroSenha && <p className="text-sm text-red-500">Senha está incorreta</p>
-            }
+            {erroSenha && <p className="text-sm text-red-500">{erroSenha}</p>}
           </div>
-          <p className="text-right text-sm text-sky-600 underline underline-offset-1">
-            Esqueci a senha
-          </p>
+          <div className="w-full text-right">
+            <Link
+              to="/cadastro"
+              className="text-sm text-sky-600 underline underline-offset-1"
+            >
+              Esqueci a senha
+            </Link>
+          </div>
         </div>
         <button
           type="submit"

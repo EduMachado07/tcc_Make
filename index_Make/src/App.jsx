@@ -8,7 +8,7 @@ function Navbar() {
         <Link className="mr-5 font-medium text-lg hover:text-sky-600" to="/negocios">Negócios</Link>
         <Link className="mr-5 font-medium text-lg hover:text-sky-600" to="/">Planos</Link>
         <Link className="mr-5 font-medium text-lg hover:text-sky-600" to="/">Sobre</Link>
-        <Link className="mr-5 font-medium text-lg hover:text-sky-600" to="/">Cadastro</Link>
+        <Link className="mr-5 font-medium text-lg hover:text-sky-600" to="/cadastro">Cadastro</Link>
         <Link className="font-medium text-lg hover:text-sky-600" to="/login">Login</Link>
       </ul>
     </div>

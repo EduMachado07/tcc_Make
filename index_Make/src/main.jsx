@@ -11,6 +11,7 @@ import {
 // ------- paginas da aplicacao --------
 import App from "./App.jsx";
 import Login from "./pages/login.jsx";
+import Cadastro from "./pages/cadastro.jsx";
 import Negocios from "./pages/negocios.jsx";
 
 const Rotas = () => {
@@ -19,9 +20,6 @@ const Rotas = () => {
     {
       path: "/",
       element: <App />,
-      children: [
-        {}
-      ]
     },
     {
       path: "/login",
@@ -29,7 +27,7 @@ const Rotas = () => {
     },
     {
       path: "/cadastro",
-      element: <App />,
+      element: <Cadastro />,
     },
     {
       path: "/negocios",
