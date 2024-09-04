@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { authLogin } from "../context/authLogin";
+import urlBase from "../APIs/Url_Base";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,6 +10,9 @@ const Login = () => {
   const [erroEmail, setErro_Email] = useState("");
   const [erroSenha, setErro_Senha] = useState("");
   const navigate = useNavigate();
+
+  const stateLogin = authLogin((state) => state.login);
+
   // INICIA PAGINA COM INPUT FOCADO
   const inputEmail = useRef(null);
   useEffect(() => {
@@ -18,6 +23,7 @@ const Login = () => {
 
   async function EnviarFormulario(event) {
     event.preventDefault();
+
     // VERIFICA SE OS CAMPOS ESTAO PREENCHIDOS
     setErro_Email("");
     setErro_Senha("");
@@ -25,9 +31,9 @@ const Login = () => {
     if (email === "" && senha === "") {
       setErro_Email("campo email obrigatório");
       setErro_Senha("campo senha obrigatório");
-      return
+      return;
     }
-    if (email === "" ) {
+    if (email === "") {
       setErro_Email("campo email obrigatório");
       return;
     }
@@ -35,11 +41,20 @@ const Login = () => {
       setErro_Senha("campo senha obrigatório");
       return;
     }
+     // Tempo limite de 15 segundos
+    const timeout = 15000;
+
+    // Promessa para gerenciar o tempo limite
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
+    );
+
     // CHAMADA API
     try {
-      const res = await axios.get(
-        "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/user"
-      );
+      const res = await Promise.race([
+        axios.get("https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/user"),
+        timeoutPromise
+      ]);
       const user = res.data.find((user) => user.email === email);
 
       // VERIFICA NA API, SE AS INFORMACOES ESTAO CORRETAS
@@ -52,6 +67,7 @@ const Login = () => {
       } else {
         setErro_Email("");
         setErro_Senha("");
+        stateLogin(user);
         navigate("/negocios");
       }
     } catch (error) {
@@ -64,7 +80,7 @@ const Login = () => {
         });
       } else if (error.request) {
         // SOLICITACAO FEITA, MAS SEM RESPOSTA
-        console.log("Nanhuma resposta recebida: ", error.request);
+        console.log("Nenhuma resposta recebida: ", error.request);
       } else {
         console.log("Erro na solicitação: ", error.message);
       }
@@ -168,12 +184,25 @@ const Login = () => {
             </Link>
           </div>
         </div>
-        <button
-          type="submit"
-          className="w-3/4 bg-sky-600 font-medium p-2 rounded-md text-blue-50 shadow-lg"
-        >
-          Entrar
-        </button>
+        <div className="w-3/4 flex flex-col">
+          <button
+            type="submit"
+            className="w-full bg-sky-600 font-medium p-2 rounded-md text-blue-50 shadow-lg"
+          >
+            Entrar
+          </button>
+          <div className="w-full text-center">
+            <p className="text-sm mt-1.5">
+              Não possui uma conta?{" "}
+              <Link
+                to="/cadastro"
+                className="text-sm text-sky-600 underline underline-offset-1"
+              >
+                Cria uma conta agora!
+              </Link>
+            </p>
+          </div>
+        </div>
         <div className="w-full flex justify-center items-center relative mt-3 mb-2">
           <hr className="w-3/4 border border-sky-600" />
           <p className="px-2 absolute bg-slate-100">ou</p>

@@ -20,6 +20,12 @@ const Rotas = () => {
     {
       path: "/",
       element: <App />,
+      children: [
+        {
+          path: "/negocios",
+          element: <Negocios />,
+        },
+      ]
     },
     {
       path: "/login",
@@ -28,10 +34,6 @@ const Rotas = () => {
     {
       path: "/cadastro",
       element: <Cadastro />,
-    },
-    {
-      path: "/negocios",
-      element: <Negocios />,
     },
   ]);
   return <RouterProvider router={routes} />;
