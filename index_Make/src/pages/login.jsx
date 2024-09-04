@@ -18,7 +18,7 @@ const Login = () => {
 
   async function EnviarFormulario(event) {
     event.preventDefault();
-    // VERIFICA SE OS CAMPOS ESTAO PREENCHIDOS
+    // VERIFICA SE OS CAMPOS 
     setErro_Email("");
     setErro_Senha("");
 
