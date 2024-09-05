@@ -24,9 +24,11 @@ function Navbar() {
 }
 
 function App() {
+  const authLogout = authLogin((state) => state.logout)
   return (
     <div className="w-full h-screen">
       <Navbar/>
+      <button onClick={authLogout}>deslogar</button>
       <Outlet />
     </div>
   );

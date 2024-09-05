@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { authLogin } from "../context/authLogin";
-import urlBase from "../APIs/Url_Base";
 
 const Login = () => {
   const [email, setEmail] = useState("");
