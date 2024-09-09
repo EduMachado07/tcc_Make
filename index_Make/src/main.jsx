@@ -13,14 +13,15 @@ import App from "./App.jsx";
 import Login from "./pages/login.jsx";
 import Negocios from "./pages/negocios.jsx";
 import Cadastro from "./pages/cadastro/cadastro.jsx";
-  import Email from "./pages/cadastro/email.jsx";
-  import Confirma_Email from "./pages/cadastro/confirmaEmail.jsx";
-  import Tipo_Usuario from "./pages/cadastro/tipoUsuario.jsx";
-  import Cliente from "./pages/cadastro/cliente.jsx";
-  import Empresa from "./pages/cadastro/empresa.jsx";
+import Email from "./pages/cadastro/email.jsx";
+import Confirma_Email from "./pages/cadastro/confirmaEmail.jsx";
+import Tipo_Usuario from "./pages/cadastro/tipoUsuario.jsx";
+import Cliente from "./pages/cadastro/cliente.jsx";
+import Empresa from "./pages/cadastro/empresa.jsx";
+
+import ProtecaoRotas from "./components/protecaoRotas.jsx";
 
 const Rotas = () => {
-
   const routes = createBrowserRouter([
     {
       path: "/",
@@ -30,7 +31,7 @@ const Rotas = () => {
           path: "/negocios",
           element: <Negocios />,
         },
-      ]
+      ],
     },
     {
       path: "/login",
@@ -42,29 +43,32 @@ const Rotas = () => {
       children: [
         {
           index: true, // Define que essa rota será carregada inicialmente
-          element: <Navigate to="email" replace />
+          element: <Navigate to="email" replace />,
         },
         {
-          path: "email",  
-          element: <Email/>
+          path: "email",
+          element: <ProtecaoRotas pagina={<Email />} etapa={1} />,
         },
         {
           path: "validacao",
-          element: <Confirma_Email/>
+          element: <ProtecaoRotas pagina={<Confirma_Email />} etapa={2} />,
         },
         {
           path: "tipo-usuario",
-          element: <Tipo_Usuario/>
+          element: <ProtecaoRotas pagina={<Tipo_Usuario />} etapa={3} />,
+          
         },
         {
           path: "cadastro-cliente",
-          element: <Cliente/>
+          element: <ProtecaoRotas pagina={<Cliente />} etapa={4} />,
+          
         },
         {
-          path: "cadastro-negocio",
-          element: <Empresa/>
+          path: "cadastro-empresa",
+          element: <ProtecaoRotas pagina={<Empresa />} etapa={4} />,
+          
         },
-      ]
+      ],
     },
   ]);
   return <RouterProvider router={routes} />;
@@ -72,6 +76,6 @@ const Rotas = () => {
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Rotas/>
+    <Rotas />
   </StrictMode>
 );

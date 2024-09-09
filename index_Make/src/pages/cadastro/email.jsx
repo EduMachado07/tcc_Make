@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authEmail } from "../../context/authEmail";
+import { authProtecao_Rotas } from "../../context/authProtecao_rotas";
 
 const Email = () => {
   const [email, setEmail] = useState("");
-  const [erroEmail, setErro_Email] = useState("");
   const navigate = useNavigate();
   const stateEmail = authEmail((state) => state.setEmail);
-
+  const stateEtapa = authProtecao_Rotas((state) => state.setEtapa);
   // INICIA PAGINA COM INPUT FOCADO
   const inputEmail = useRef(null);
   useEffect(() => {
@@ -16,11 +16,16 @@ const Email = () => {
     }
   }, []);
 
-  function EnviarFormulario(event){
+  function EnviarFormulario(event) {
+    const timeout = 2000;
+
     event.preventDefault();
-    setErro_Email("");
-    stateEmail(email);
-    navigate("../validacao")
+    setTimeout(() => {
+      stateEmail(email);
+      stateEtapa(2);
+      navigate("../validacao");
+    }, timeout);
+
   }
 
   return (
@@ -47,24 +52,25 @@ const Email = () => {
               />
             </svg>
             <input
-              className={`w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1 ${
-                erroEmail ? "border-red-500" : "border-slate-300"
-              }`}
+              className="w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1"
               type="email"
               name="email"
-              id="email"
               ref={inputEmail}
               placeholder="user@gmail.com"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
-            {erroEmail && <p className="text-sm text-red-500">{erroEmail}</p>}
           </div>
         </div>
         <div className="w-3/4 flex flex-col">
           <button
             type="submit"
-            className="w-full bg-sky-600 font-medium p-2 rounded-md text-blue-50 shadow-lg"
+            disabled={!email}
+            className={`w-full bg-sky-600 font-medium p-2 rounded-md text-blue-50 shadow-lg transition duration-150 ease-in delay-100 ${
+              email === ""
+                ? "bg-slate-200 text-slate-400"
+                : "bg-sky-600 text-blue-50"
+            }`}
           >
             Cadastrar
           </button>
