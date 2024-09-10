@@ -6,8 +6,7 @@ import { authLogin } from "../context/authLogin";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [erroEmail, setErro_Email] = useState("");
-  const [erroSenha, setErro_Senha] = useState("");
+  const [erro, setErro] = useState("");
   const navigate = useNavigate();
 
   const stateLogin = authLogin((state) => state.login);
@@ -22,27 +21,10 @@ const Login = () => {
 
   async function EnviarFormulario(event) {
     event.preventDefault();
+    setErro("");
 
-    // VERIFICA SE OS CAMPOS ESTAO PREENCHIDOS
-    setErro_Email("");
-    setErro_Senha("");
-
-    if (email === "" && senha === "") {
-      setErro_Email("campo email obrigatório");
-      setErro_Senha("campo senha obrigatório");
-      return;
-    }
-    if (email === "") {
-      setErro_Email("campo email obrigatório");
-      return;
-    }
-    if (senha === "") {
-      setErro_Senha("campo senha obrigatório");
-      return;
-    }
-     // Tempo limite de 15 segundos
+    // Tempo limite de 15 segundos
     const timeout = 15000;
-
     // Promessa para gerenciar o tempo limite
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
@@ -52,20 +34,17 @@ const Login = () => {
     try {
       const res = await Promise.race([
         axios.get("https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/user"),
-        timeoutPromise
+        timeoutPromise,
       ]);
       const user = res.data.find((user) => user.email === email);
 
       // VERIFICA NA API, SE AS INFORMACOES ESTAO CORRETAS
       if (!user) {
-        setErro_Email("Email não encontrado ou incorreto");
-        setErro_Senha("");
+        setErro("Email está incorreto");
       } else if (user.senha !== senha) {
-        setErro_Email("");
-        setErro_Senha("Senha está incorreta");
+        setErro("Senha está incorreta");
       } else {
-        setErro_Email("");
-        setErro_Senha("");
+        setErro("");
         stateLogin(user);
         navigate("/negocios");
       }
@@ -112,10 +91,29 @@ const Login = () => {
       <form
         method="post"
         onSubmit={EnviarFormulario}
-        className="w-2/4 px-4 h-full relative flex flex-col justify-center items-center gap-6"
+        className="w-2/4 px-4 h-full relative flex flex-col justify-center items-center gap-4"
       >
         <div className="flex flex-col w-3/4 gap-1">
-          <h1 className="mb-7 text-3xl text-sky-600 font-semibold">Login</h1>
+          <h1 className="mb-5 text-3xl text-sky-600 font-semibold">Login</h1>
+          {erro && (
+            <p className="text-base inline-flex gap-1 text-red-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+                />
+              </svg>
+              {erro}
+            </p>
+          )}
           <label className="text-base font-base">Email</label>
           <div className="relative">
             <svg
@@ -131,18 +129,14 @@ const Login = () => {
               />
             </svg>
             <input
-              className={`w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1 ${
-                erroEmail ? "border-red-500" : "border-slate-300"
-              }`}
+              className="w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1 focus:border-sky-600"
               type="email"
               name="email"
-              id="email"
               ref={inputEmail}
               placeholder="user@gmail.com"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
-            {erroEmail && <p className="text-sm text-red-500">{erroEmail}</p>}
           </div>
         </div>
         <div className="flex flex-col w-3/4 gap-1">
@@ -163,16 +157,13 @@ const Login = () => {
               />
             </svg>
             <input
-              className={`w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1 ${
-                erroSenha ? "border-red-500" : "border-slate-300"
-              }`}
+              className="w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1"
               type="password"
               name="senha"
               placeholder="senha"
               value={senha}
               onChange={(event) => setSenha(event.target.value)}
             />
-            {erroSenha && <p className="text-sm text-red-500">{erroSenha}</p>}
           </div>
           <div className="w-full text-right">
             <Link
@@ -186,7 +177,12 @@ const Login = () => {
         <div className="w-3/4 flex flex-col">
           <button
             type="submit"
-            className="w-full bg-sky-600 font-medium p-2 rounded-md text-blue-50 shadow-lg"
+            disabled={!email || !senha}
+            className={`w-full mb-1 font-medium p-2 rounded-md shadow-lg transition duration-150 ease-in delay-100 ${
+              !email || !senha
+                ? "bg-slate-200 text-slate-400"
+                : "bg-sky-600 text-blue-50"
+            }`}
           >
             Entrar
           </button>
