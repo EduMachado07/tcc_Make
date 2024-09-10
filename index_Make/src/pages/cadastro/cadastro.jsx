@@ -18,9 +18,9 @@ const Cadastro = () => {
           <h1 className="text-2xl text-center text-slate-100">
             Dê seus primeiros passos!
           </h1>
-          <p className="text-center text-slate-100">
+          <p className="text-left text-slate-100">
             Preencha todos os campos com as suas informações, e desfrute do
-            melhor sistema de gerenciamento para empresas.
+            melhor sistema de gerenciamento de serviços para pequenas e grandes empresas.
           </p>
         </div>
       </section>
