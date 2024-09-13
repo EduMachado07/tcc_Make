@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import { authLogin } from "./context/authLogin";
 
 import { Button } from "@/components/ui/button";
@@ -45,10 +45,15 @@ function Navbar() {
 
 function App() {
   const authLogout = authLogin((state) => state.logout);
+  const navigate = useNavigate();
+  
+  function Deslogar() {
+    authLogout(navigate);
+  }
   return (
     <div className="w-full h-screen">
       <Navbar />
-      <Button size="sm" variant="destructive" onClick={authLogout}>
+      <Button size="sm" variant="destructive" onClick={Deslogar}>
         Sair da conta
       </Button>
       <Outlet />
@@ -57,4 +62,4 @@ function App() {
 }
 
 export default App;
-1
+1;

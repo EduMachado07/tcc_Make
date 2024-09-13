@@ -20,16 +20,22 @@ import Empresa from "./pages/cadastro/empresa.jsx";
 
 // --------- PROTECAO PARA CADASTRO ------------
 // COMPONENTE REDIRECIONA PARA PAGINA INICIAL
-import {authProtecao_Rotas} from "./context/authProtecao_rotas.ts"
+import { authProtecao_Rotas } from "./context/authProtecao_rotas.ts";
 
 const ProtecaoRotas = ({ pagina, etapa }) => {
   const etapaAtual = authProtecao_Rotas((state) => state.etapa);
 
-  return etapaAtual >= etapa ? (
-    pagina
-  ) : (
-    <Navigate to="/cadastro/email" replace />
-  );
+  // console.log(`Etapa atual: ${etapaAtual}, Etapa requerida: ${etapa}`);
+
+  if (etapaAtual > 2 && etapa < 3) {
+    return <Navigate to="/cadastro/tipo-usuario" replace />
+  }
+
+  if (etapaAtual >= etapa) {
+    return pagina;
+  }
+
+  return <Navigate to="/cadastro/email" replace />
 };
 
 // --------- COMPONENTE PARA ROTAS DA APLICACAO ------------
@@ -68,17 +74,14 @@ const Rotas = () => {
         {
           path: "tipo-usuario",
           element: <ProtecaoRotas pagina={<Tipo_Usuario />} etapa={3} />,
-          
         },
         {
           path: "cadastro-cliente",
           element: <ProtecaoRotas pagina={<Cliente />} etapa={4} />,
-          
         },
         {
           path: "cadastro-empresa",
           element: <ProtecaoRotas pagina={<Empresa />} etapa={4} />,
-          
         },
       ],
     },

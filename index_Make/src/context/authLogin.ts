@@ -1,4 +1,5 @@
 import {create} from 'zustand';
+import { NavigateFunction } from 'react-router-dom';
 
 type User = {
     id: string | number;
@@ -10,7 +11,7 @@ type AuthStore = {
     user: User | null;
     autenticacao: boolean;
     login: (data: User) => void;
-    logout: () => void;
+    logout: (navigate: NavigateFunction) => void;
 }
 
 export const authLogin = create<AuthStore>((set) => {
@@ -40,12 +41,13 @@ export const authLogin = create<AuthStore>((set) => {
       },
   
       // FUNCAO PARA DESLOGAR
-      logout: () => {
+      logout: (navigate) => {
         localStorage.removeItem("user");
         set(() => ({
           user: null,
           autenticacao: false,
         }));
+        navigate("/login");
       },
     };
   });

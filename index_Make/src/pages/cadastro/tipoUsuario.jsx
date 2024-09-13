@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authProtecao_Rotas } from "../../context/authProtecao_rotas";
+// -------- COMPONENTES UI (shadcn)------------
+import { Button } from "@/components/ui/button";
 
 const Tipo_Usuario = () => {
   const [user, setUser] = useState("");
@@ -11,7 +13,7 @@ const Tipo_Usuario = () => {
     setUser(tipo);
   }
   function EnviarUsuario() {
-    stateEtapa(4)
+    stateEtapa(4);
     if (user === "cliente") {
       navigate("../cadastro-cliente");
     } else if (user === "empresa") {
@@ -23,13 +25,15 @@ const Tipo_Usuario = () => {
 
   return (
     <div className="h-full 600 flex justify-center items-center">
-      <section className="w-3/4 flex flex-col gap-6">
+      <section className="w-3/4 flex flex-col gap-6 px-4">
         {/* CARD CLIENTE */}
-        <h1 className="text-3xl text-sky-600 font-semibold">Quem você é?</h1>
+        <h1 className="text-3xl text-colorPrimary font-semibold">
+          Quem você é?
+        </h1>
         <div
           className={`flex rounded-sm shadow-md justify-around items-center around p-3 ${
             user === "cliente"
-              ? "border-2 border-sky-600"
+              ? "border-2 border-colorPrimary"
               : "border-2 border-transparent"
           }`}
           onClick={() => tipoUsario("cliente")}
@@ -38,18 +42,18 @@ const Tipo_Usuario = () => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            class="w-16 h-16 fill-sky-600"
+            className="w-16 h-16 fill-colorPrimary"
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-              clip-rule="evenodd"
+              clipRule="evenodd"
             />
           </svg>
 
           <div className="w-7/12">
-            <h1 className="text-xl text-sky-600">Cliente</h1>
-            <hr className="border-1 border-sky-600 mb-2" />
+            <h1 className="text-xl text-colorPrimary">Cliente</h1>
+            <hr className="border-1 border-colorPrimary mb-2" />
             <p className="text-sm">
               Se você quer descobrir empresas e agendar um horário com
               profissionais da beleza, a qualquer hora e em qualquer lugar, essa
@@ -61,7 +65,7 @@ const Tipo_Usuario = () => {
         <div
           className={`flex rounded-sm shadow-md justify-around items-center around p-3 ${
             user === "empresa"
-              ? "border-2 border-sky-600"
+              ? "border-2 border-colorPrimary"
               : "border-2 border-transparent"
           }`}
           onClick={() => tipoUsario("empresa")}
@@ -70,7 +74,7 @@ const Tipo_Usuario = () => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-16 h-16 fill-sky-600"
+            className="w-16 h-16 fill-colorPrimary"
           >
             <path d="M5.223 2.25c-.497 0-.974.198-1.325.55l-1.3 1.298A3.75 3.75 0 0 0 7.5 9.75c.627.47 1.406.75 2.25.75.844 0 1.624-.28 2.25-.75.626.47 1.406.75 2.25.75.844 0 1.623-.28 2.25-.75a3.75 3.75 0 0 0 4.902-5.652l-1.3-1.299a1.875 1.875 0 0 0-1.325-.549H5.223Z" />
             <path
@@ -81,8 +85,8 @@ const Tipo_Usuario = () => {
           </svg>
 
           <div className="w-7/12">
-            <h1 className="text-xl text-sky-600">Empresa</h1>
-            <hr className="border-1 border-sky-600 mb-2" />
+            <h1 className="text-xl text-colorPrimary">Empresa</h1>
+            <hr className="border-1 border-colorPrimary mb-2" />
             <p className="text-sm">
               Se você quer descobrir empresas e agendar um horário com
               profissionais da beleza, a qualquer hora e em qualquer lugar, essa
@@ -90,18 +94,9 @@ const Tipo_Usuario = () => {
             </p>
           </div>
         </div>
-        <button
-          type="submit"
-          disabled={!user}
-          className={`w-full font-medium p-2 rounded-md shadow-lg transition duration-150 ease-in delay-100 ${
-            user === ""
-              ? "bg-slate-200 text-slate-400"
-              : "bg-sky-600 text-blue-50"
-          }`}
-          onClick={EnviarUsuario}
-        >
+        <Button variant="primary" disabled={!user} onClick={EnviarUsuario}>
           Continuar
-        </button>
+        </Button>
       </section>
     </div>
   );

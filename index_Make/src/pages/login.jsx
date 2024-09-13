@@ -2,6 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { authLogin } from "../context/authLogin";
+// -------- COMPONENTES UI (shadcn)------------
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -66,9 +71,9 @@ const Login = () => {
   }
 
   return (
-    <div className="w-full h-screen bg-slate-100 flex justify-center items-center p-3">
+    <div className="w-full h-screen bg-colorBack flex justify-center items-center p-3">
       {/* IDENTIFICACAO DA PAGINA */}
-      <div className="bg-sky-600 w-2/4 h-full rounded-l-md relative flex justify-center items-center">
+      <div className="bg-colorPrimary w-2/4 h-full rounded-l-md relative flex justify-center items-center">
         <Link
           to={"/"}
           className="absolute top-5 left-3 text-xl font-bold text-blue-50"
@@ -93,17 +98,18 @@ const Login = () => {
         onSubmit={EnviarFormulario}
         className="w-2/4 px-4 h-full relative flex flex-col justify-center items-center gap-4"
       >
-        <div className="flex flex-col w-3/4 gap-1">
-          <h1 className="mb-5 text-3xl text-sky-600 font-semibold">Login</h1>
+        <div className="flex flex-col w-3/4 gap-3">
+          <Label size="subtitle">Login</Label>
+          {/* MENSAGEM DE ERRO PARA EMAIL E SENHA */}
           {erro && (
-            <p className="text-base inline-flex gap-1 text-red-500">
+            <section className="inline-flex gap-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-6"
+                className="size-5 stroke-red-500"
               >
                 <path
                   strokeLinecap="round"
@@ -111,113 +117,101 @@ const Login = () => {
                   d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
                 />
               </svg>
-              {erro}
-            </p>
+              <Label color="alert">{erro}</Label>
+            </section>
           )}
-          <label className="text-base font-base">Email</label>
-          <div className="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="size-5 fill-sky-600 absolute top-2 left-1.5"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.404 14.596A6.5 6.5 0 1 1 16.5 10a1.25 1.25 0 0 1-2.5 0 4 4 0 1 0-.571 2.06A2.75 2.75 0 0 0 18 10a8 8 0 1 0-2.343 5.657.75.75 0 0 0-1.06-1.06 6.5 6.5 0 0 1-9.193 0ZM10 7.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"
-                clipRule="evenodd"
+          {/* CAMPO EMAIL */}
+          <>
+            <Label size="medium">Email</Label>
+            <div className="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-5 fill-colorPrimary absolute inset-y-2 left-1.5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M17.834 6.166a8.25 8.25 0 1 0 0 11.668.75.75 0 0 1 1.06 1.06c-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788 3.807-3.808 9.98-3.808 13.788 0A9.722 9.722 0 0 1 21.75 12c0 .975-.296 1.887-.809 2.571-.514.685-1.28 1.179-2.191 1.179-.904 0-1.666-.487-2.18-1.164a5.25 5.25 0 1 1-.82-6.26V8.25a.75.75 0 0 1 1.5 0V12c0 .682.208 1.27.509 1.671.3.401.659.579.991.579.332 0 .69-.178.991-.579.3-.4.509-.99.509-1.671a8.222 8.222 0 0 0-2.416-5.834ZM15.75 12a3.75 3.75 0 1 0-7.5 0 3.75 3.75 0 0 0 7.5 0Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+
+              <Input
+                variant="inputIcon"
+                type="email"
+                value={email}
+                ref={inputEmail}
+                placeholder="user@gmail.com"
+                onChange={(event) => setEmail(event.target.value)}
               />
-            </svg>
-            <input
-              className="w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1 focus:border-sky-600"
-              type="email"
-              name="email"
-              ref={inputEmail}
-              placeholder="user@gmail.com"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-          </div>
-        </div>
-        <div className="flex flex-col w-3/4 gap-1">
-          <label className="text-base font-base">Senha</label>
-          <div className="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-5 stroke-sky-600 absolute top-2 left-1.5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+            </div>
+          </>
+          <>
+            <Label size="medium">Senha</Label>
+            <div className="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 stroke-colorPrimary absolute inset-y-2 left-1.5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+                />
+              </svg>
+              <Input
+                variant="inputIcon"
+                type="password"
+                value={senha}
+                placeholder="user@123"
+                onChange={(event) => setSenha(event.target.value)}
               />
-            </svg>
-            <input
-              className="w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1"
-              type="password"
-              name="senha"
-              placeholder="senha"
-              value={senha}
-              onChange={(event) => setSenha(event.target.value)}
-            />
-          </div>
-          <div className="w-full text-right">
-            <Link
-              to="/cadastro"
-              className="text-sm text-sky-600 underline underline-offset-1"
-            >
-              Esqueci a senha
-            </Link>
-          </div>
+              <div className="w-full text-right">
+                <Link
+                  className={buttonVariants({
+                    variant: "link",
+                    color: "secondary",
+                    size: "link",
+                  })}
+                >
+                  Esqueci a senha
+                </Link>
+              </div>
+            </div>
+          </>
         </div>
         <div className="w-3/4 flex flex-col">
-          <button
-            type="submit"
-            disabled={!email || !senha}
-            className={`w-full mb-1 font-medium p-2 rounded-md shadow-lg transition duration-150 ease-in delay-100 ${
-              !email || !senha
-                ? "bg-slate-200 text-slate-400"
-                : "bg-sky-600 text-blue-50"
-            }`}
-          >
+          <Button variant="primary" disabled={!email || !senha}>
             Entrar
-          </button>
+          </Button>
           <div className="w-full text-center">
-            <p className="text-sm mt-1.5">
+            <p className="text-sm">
               Não possui uma conta?{" "}
               <Link
                 to="/cadastro"
-                className="text-sm text-sky-600 underline underline-offset-1"
+                className={buttonVariants({
+                  variant: "link",
+                  color: "secondary",
+                  size: "link",
+                })}
               >
                 Cria uma conta agora!
               </Link>
             </p>
           </div>
         </div>
-        <div className="w-full flex justify-center items-center relative mt-3 mb-2">
-          <hr className="w-3/4 border border-sky-600" />
-          <p className="px-2 absolute bg-slate-100">ou</p>
+        <div className="w-3/4 flex justify-center items-center relative mt-3 mb-2">
+          <Separator />
+          <p className="px-6 absolute bg-colorBack">ou</p>
         </div>
         <div className="w-3/4 flex flex-col gap-3">
-          <div className="relative">
-            <button className="w-full font-normal bg-red-600 p-1.5 rounded-md text-red-50 shadow-lg">
-              Login com Google
-            </button>
-          </div>
-          <div className="relative">
-            <button className="w-full font-normal bg-blue-500 p-1.5 rounded-md text-red-50 shadow-lg">
-              Login com Facebook
-            </button>
-          </div>
-          <div className="relative">
-            <button className="w-full font-normal bg-gradient-to-r from-purple-500 via-pink-600 to-red-600 p-1.5 rounded-md text-red-50 shadow-lg">
-              Login com Instagram
-            </button>
-          </div>
+          <Button>Login com Google</Button>
+          <Button>Login com Facebook</Button>
         </div>
       </form>
     </div>

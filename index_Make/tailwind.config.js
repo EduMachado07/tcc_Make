@@ -18,6 +18,13 @@ export default {
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
+			// ----- CORES DO TCC ---------
+			colorPrimary: '#34597c', 
+			colorPrimary_Shadow: '#3e6a94', 
+			colorSecondary: '#8bc5e5', 
+			colorShadow: '#373636', 
+			colorText: '#212121',
+			colorBack: '#ebebeb',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
