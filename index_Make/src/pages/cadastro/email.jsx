@@ -2,6 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authEmail } from "../../context/authEmail";
 import { authProtecao_Rotas } from "../../context/authProtecao_rotas";
+// -------- COMPONENTES UI (shadcn)------------
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const Email = () => {
   const [email, setEmail] = useState("");
@@ -25,7 +30,6 @@ const Email = () => {
       stateEtapa(2);
       navigate("../validacao");
     }, timeout);
-
   }
 
   return (
@@ -33,79 +37,64 @@ const Email = () => {
       <form
         method="post"
         onSubmit={EnviarFormulario}
-        className=" w-full h-full flex flex-col justify-center items-center gap-6"
+        className=" w-full h-full flex flex-col justify-center items-center gap-6 px-4"
       >
-        <div className="flex flex-col w-3/4 gap-1">
-          <h1 className="mb-7 text-3xl text-sky-600 font-semibold">Cadastro</h1>
-          <label className="text-base font-base">Email</label>
+        <div className="flex flex-col w-3/4 gap-3">
+          <Label size="subtitle">Cadastro</Label>
+          <Label size="medium">Email</Label>
           <div className="relative">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
+              viewBox="0 0 24 24"
               fill="currentColor"
-              className="size-5 fill-sky-600 absolute top-2 left-1.5"
+              className="size-5 fill-colorPrimary absolute inset-y-2 left-1.5"
             >
               <path
                 fillRule="evenodd"
-                d="M5.404 14.596A6.5 6.5 0 1 1 16.5 10a1.25 1.25 0 0 1-2.5 0 4 4 0 1 0-.571 2.06A2.75 2.75 0 0 0 18 10a8 8 0 1 0-2.343 5.657.75.75 0 0 0-1.06-1.06 6.5 6.5 0 0 1-9.193 0ZM10 7.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"
+                d="M17.834 6.166a8.25 8.25 0 1 0 0 11.668.75.75 0 0 1 1.06 1.06c-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788 3.807-3.808 9.98-3.808 13.788 0A9.722 9.722 0 0 1 21.75 12c0 .975-.296 1.887-.809 2.571-.514.685-1.28 1.179-2.191 1.179-.904 0-1.666-.487-2.18-1.164a5.25 5.25 0 1 1-.82-6.26V8.25a.75.75 0 0 1 1.5 0V12c0 .682.208 1.27.509 1.671.3.401.659.579.991.579.332 0 .69-.178.991-.579.3-.4.509-.99.509-1.671a8.222 8.222 0 0 0-2.416-5.834ZM15.75 12a3.75 3.75 0 1 0-7.5 0 3.75 3.75 0 0 0 7.5 0Z"
                 clipRule="evenodd"
               />
             </svg>
-            <input
-              className="w-full pl-7 py-1 shadow-sm rounded font-light bg-transparent border-1"
+            <Input
+              variant="inputIcon"
               type="email"
-              name="email"
-              ref={inputEmail}
-              placeholder="user@gmail.com"
               value={email}
+              placeholder="user@gmail.com"
               onChange={(event) => setEmail(event.target.value)}
             />
           </div>
         </div>
+        {/* BOTAO CADASTRAR */}
         <div className="w-3/4 flex flex-col">
-          <button
-            type="submit"
-            disabled={!email}
-            className={`w-full bg-sky-600 font-medium p-2 rounded-md text-blue-50 shadow-lg transition duration-150 ease-in delay-100 ${
-              email === ""
-                ? "bg-slate-200 text-slate-400"
-                : "bg-sky-600 text-blue-50"
-            }`}
-          >
+          <Button variant="primary" disabled={!email}>
             Cadastrar
-          </button>
+          </Button>
+          {/* LINK PARA PAGINA LOGIN */}
           <div className="w-full text-center">
             <p className="text-sm mt-1.5">
-              Já possui uma conta?{" "}
+              Já tem uma conta?{" "}
               <Link
                 to="/login"
-                className="text-sm text-sky-600 underline underline-offset-1"
+                className={buttonVariants({
+                  variant: "link",
+                  color: "secondary",
+                  size: "link",
+                })}
               >
                 Faça login!
               </Link>
             </p>
           </div>
         </div>
-        <div className="w-full flex justify-center items-center relative mt-3 mb-2">
-          <hr className="w-3/4 border border-sky-600" />
-          <p className="px-2 absolute bg-slate-100">ou</p>
+        {/* SEPARADOR */}
+        <div className="w-3/4 flex justify-center items-center relative mt-3 mb-2">
+          <Separator />
+          <p className="px-6 absolute bg-colorBack">ou</p>
         </div>
+        {/* BOTOES CADASTRO GOOGLE E FACEBOOK */}
         <div className="w-3/4 flex flex-col gap-3">
-          <div className="relative">
-            <button className="w-full font-normal bg-red-600 p-1.5 rounded-md text-red-50 shadow-lg">
-              Login com Google
-            </button>
-          </div>
-          <div className="relative">
-            <button className="w-full font-normal bg-blue-500 p-1.5 rounded-md text-red-50 shadow-lg">
-              Login com Facebook
-            </button>
-          </div>
-          <div className="relative">
-            <button className="w-full font-normal bg-gradient-to-r from-purple-500 via-pink-600 to-red-600 p-1.5 rounded-md text-red-50 shadow-lg">
-              Login com Instagram
-            </button>
-          </div>
+          <Button>Login com Google</Button>
+          <Button>Login com Facebook</Button>
         </div>
       </form>
     </div>

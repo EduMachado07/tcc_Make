@@ -1,7 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-
 import {
   createBrowserRouter,
   RouterProvider,
@@ -19,8 +18,27 @@ import Tipo_Usuario from "./pages/cadastro/tipoUsuario.jsx";
 import Cliente from "./pages/cadastro/cliente.jsx";
 import Empresa from "./pages/cadastro/empresa.jsx";
 
-import ProtecaoRotas from "./components/protecaoRotas.jsx";
+// --------- PROTECAO PARA CADASTRO ------------
+// COMPONENTE REDIRECIONA PARA PAGINA INICIAL
+import { authProtecao_Rotas } from "./context/authProtecao_rotas.ts";
 
+const ProtecaoRotas = ({ pagina, etapa }) => {
+  const etapaAtual = authProtecao_Rotas((state) => state.etapa);
+
+  // console.log(`Etapa atual: ${etapaAtual}, Etapa requerida: ${etapa}`);
+
+  if (etapaAtual > 2 && etapa < 3) {
+    return <Navigate to="/cadastro/tipo-usuario" replace />
+  }
+
+  if (etapaAtual >= etapa) {
+    return pagina;
+  }
+
+  return <Navigate to="/cadastro/email" replace />
+};
+
+// --------- COMPONENTE PARA ROTAS DA APLICACAO ------------
 const Rotas = () => {
   const routes = createBrowserRouter([
     {
@@ -56,17 +74,14 @@ const Rotas = () => {
         {
           path: "tipo-usuario",
           element: <ProtecaoRotas pagina={<Tipo_Usuario />} etapa={3} />,
-          
         },
         {
           path: "cadastro-cliente",
           element: <ProtecaoRotas pagina={<Cliente />} etapa={4} />,
-          
         },
         {
           path: "cadastro-empresa",
           element: <ProtecaoRotas pagina={<Empresa />} etapa={4} />,
-          
         },
       ],
     },
