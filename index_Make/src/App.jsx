@@ -1,11 +1,25 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { authLogin } from "./context/authLogin";
-
+import { authEmail } from "./context/authEmail";
+// -------- COMPONENTES UI (shadcn)------------
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function Navbar() {
-  const authUser = authLogin((state) => state.user);
-  const authAutenticacao = authLogin((state) => state.autenticacao);
+  const { autenticacao, logout, user } = authLogin();
+  const navigate = useNavigate();
+
+  function Deslogar() {
+    logout(navigate);
+  }
   return (
     <div className="w-full h-16 inline-flex justify-between items-center px-10">
       <Link to="/" className="text-3xl text-sky-500 font-medium">
@@ -34,8 +48,24 @@ function Navbar() {
           Login
         </Link>
       </ul>
-      {authAutenticacao ? (
-        <p>logado como {authUser.nome}</p>
+      {autenticacao ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>Billing</DropdownMenuItem>
+            <DropdownMenuItem>Team</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={Deslogar}>Sair da Conta</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ) : (
         <p>faça login</p>
       )}
@@ -44,18 +74,17 @@ function Navbar() {
 }
 
 function App() {
-  const authLogout = authLogin((state) => state.logout);
-  const navigate = useNavigate();
-  
-  function Deslogar() {
-    authLogout(navigate);
-  }
+  const { email, nome, tel, data } = authEmail();
+
   return (
     <div className="w-full h-screen">
       <Navbar />
-      <Button size="sm" variant="destructive" onClick={Deslogar}>
-        Sair da conta
-      </Button>
+      <div>
+        <p>Email: {email || "N/A"}</p>
+        <p>Nome: {nome || "N/A"}</p>
+        <p>Telefone: {tel || "N/A"}</p>
+        <p>Data de Nascimento: {data || "N/A"}</p>
+      </div>
       <Outlet />
     </div>
   );

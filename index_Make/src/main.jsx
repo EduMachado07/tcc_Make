@@ -27,7 +27,10 @@ const ProtecaoRotas = ({ pagina, etapa }) => {
 
   // console.log(`Etapa atual: ${etapaAtual}, Etapa requerida: ${etapa}`);
 
-  if (etapaAtual > 2 && etapa < 3) {
+  if (etapaAtual > 1 && etapa < 2) {
+    return <Navigate to="/cadastro/validacao" replace />
+  }
+  else if (etapaAtual > 2 && etapa == 2) {
     return <Navigate to="/cadastro/tipo-usuario" replace />
   }
 
