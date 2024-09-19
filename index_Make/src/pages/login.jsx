@@ -27,45 +27,35 @@ const Login = () => {
   async function EnviarFormulario(event) {
     event.preventDefault();
     setErro("");
-
-    // Tempo limite de 15 segundos
+  
     const timeout = 15000;
-    // Promessa para gerenciar o tempo limite
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
     );
-
-    // CHAMADA API
+  
     try {
+      console.log('Enviando requisição com:', { email, senha });
       const res = await Promise.race([
-        axios.get("https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/user"),
+        axios.post("http://localhost:3000/api/login", { email, senha }),
         timeoutPromise,
       ]);
-      const user = res.data.find((user) => user.email === email);
-
-      // VERIFICA NA API, SE AS INFORMACOES ESTAO CORRETAS
-      if (!user) {
-        setErro("Email está incorreto");
-      } else if (user.senha !== senha) {
-        setErro("Senha está incorreta");
-      } else {
-        setErro("");
+      console.log('Resposta recebida:', res);
+      const user = res.data.user;
+  
+      if (user) {
         stateLogin(user);
         navigate("/negocios");
+      } else {
+        setErro("Usuário não encontrado");
       }
     } catch (error) {
-      // TRATAMENTO DE ERROS
+      console.log('Erro na requisição:', error);
       if (error.response) {
-        // ERRO NA CHAMADA
-        console.log("Erro na resposta API: ", {
-          status: error.response.status,
-          data: error.response.data,
-        });
+        setErro(`Erro na resposta: ${error.response.data.error}`);
       } else if (error.request) {
-        // SOLICITACAO FEITA, MAS SEM RESPOSTA
-        console.log("Nenhuma resposta recebida: ", error.request);
+        setErro("Nenhuma resposta recebida do servidor.");
       } else {
-        console.log("Erro na solicitação: ", error.message);
+        setErro(`Erro na solicitação: ${error.message}`);
       }
     }
   }
