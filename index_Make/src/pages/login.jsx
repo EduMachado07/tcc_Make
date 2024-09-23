@@ -18,6 +18,7 @@ const Login = () => {
 
   async function EnviarFormulario(event) {
     event.preventDefault();
+<<<<<<< Updated upstream
     // CHAMADA API
     try {
       const res = await axios.get(
@@ -50,8 +51,41 @@ const Login = () => {
       } else {
         console.log("Erro na solicitação: ", error.message);
       }
+=======
+    setErro("");
+
+    const timeout = 15000;
+    const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
+    );
+
+    try {
+        console.log('Enviando requisição com:', { email, senha });
+        const res = await Promise.race([
+            axios.post("http://localhost:3000/api/login", { email, senha }),
+            timeoutPromise,
+        ]);
+        console.log('Resposta recebida:', res);
+        const user = res.data.user;
+
+        if (user) {
+            stateLogin(user);
+            navigate("/negocios");
+        } else {
+            setErro("Usuário não encontrado");
+        }
+    } catch (error) {
+        console.log('Erro na requisição:', error);
+        if (error.response) {
+            setErro(`Erro na resposta: ${error.response.data.error}`);
+        } else if (error.request) {
+            setErro("Nenhuma resposta recebida do servidor.");
+        } else {
+            setErro(`Erro na solicitação: ${error.message}`);
+        }
+>>>>>>> Stashed changes
     }
-  }
+}
 
   return (
     <div className="w-full h-screen bg-slate-100 flex justify-center items-center p-3">
