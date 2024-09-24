@@ -5,10 +5,10 @@ type AuthStore = {
   nome: string | null;
   tel: string | null;
   data: string | null;
-  cep: string | null;
-  numeroCep: string | null;
+  cep: number | null;
+  numeroCep: number | null;
 
-  setUserInfo: (field: keyof Omit<AuthStore, 'setUserInfo'>, value: string | null) => void;
+  setUserInfo: (field: keyof Omit<AuthStore, 'setUserInfo'>, value: number | string | null) => void;
 };
 
 export const authCadastro = create<AuthStore>((set) => {

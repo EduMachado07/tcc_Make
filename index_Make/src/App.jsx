@@ -74,7 +74,7 @@ function Navbar() {
 }
 
 function App() {
-  const { email, nome, tel, data } = authCadastro();
+  const { email, nome, tel, data, cep, numeroCep } = authCadastro();
 
   return (
     <div className="w-full h-screen">

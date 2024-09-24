@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -23,13 +23,24 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Erro from "@/components/componentes/erro";
 
 const Endereco = () => {
-  const { register, setValue, watch, handleSubmit } = useForm();
+  const {
+    register,
+    setValue,
+    watch,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm();
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
-  const cep = watch("cep") || "";
-  const numero = watch("numero") || "";  
+  const [ativo, setAtivo] = useState(false);
   const [estado, setEstado] = useState("");
+  const cep = watch("cep") || "";
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setAtivo(cep.length === 9);
+  }, [cep]);
 
   const mascaraCep = (event) => {
     const value = event.target.value.replace(/\D/g, "");
@@ -43,46 +54,51 @@ const Endereco = () => {
   };
 
   async function buscarCep(event) {
-    event.preventDefault();
+    if (cep.length === 9) {
+      event.preventDefault();
 
-    setLoading(true);
-    // TEMPO LIMITE DE 3 SEGUNDOS
-    const timeout = 3000;
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
-    );
+      setLoading(true);
+      // TEMPO LIMITE DE 3 SEGUNDOS
+      const timeout = 3000;
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
+      );
 
-    // Delay de 1 segundo antes de buscar o CEP
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Delay de 1 segundo antes de buscar o CEP
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    try {
-      const res = await Promise.race([
-        axios.get(`https://viacep.com.br/ws/${cep.replace("-", "")}/json/`),
-        timeoutPromise,
-      ]);
-      if (res.data.erro) {
-        setErro("CEP não encontrado");
-      } else {
-        setValue("estado", res.data.uf);
-        setEstado(`(${res.data.uf}) ${res.data.estado}`);
-        setValue("cidade", res.data.localidade);
-        setValue("bairro", res.data.bairro);
-        setValue("rua", res.data.logradouro);
+      try {
+        const res = await Promise.race([
+          axios.get(`https://viacep.com.br/ws/${cep.replace("-", "")}/json/`),
+          timeoutPromise,
+        ]);
+        if (res.data.erro) {
+          setErro("CEP não encontrado");
+        } else {
+          setValue("estado", res.data.uf);
+          setEstado(`(${res.data.uf}) ${res.data.estado}`);
+          setValue("cidade", res.data.localidade);
+          setValue("bairro", res.data.bairro);
+          setValue("rua", res.data.logradouro);
 
-        setErro("");
+          setErro("");
+        }
+      } catch (error) {
+        setErro("Erro ao buscar CEP: " + error.message);
       }
-    } catch (error) {
-      setErro("Erro ao buscar CEP: " + error.message);
+      // setValue("cep", "");
+      setLoading(false);
     }
-    // setValue("cep", "");
-    setLoading(false);
   }
 
-  const onSubmit = () => {
-    console.log(cep)
-    // authCadastro.getState().setUserInfo("cep", cep);
-    // authCadastro.getState().setUserInfo("numeroCep", numero);
-    // navigate("../../")
+  const onSubmit = (data) => {
+    if (!data.estado || !data.cidade || !data.bairro || !data.numero) {
+      setErro("Preencha todos os campos para continuar");
+    } else {
+      authCadastro.getState().setUserInfo("cep", data.cep);
+      authCadastro.getState().setUserInfo("numeroCep", data.numero);
+      navigate("../../");
+    }
   };
 
   return (
@@ -91,7 +107,7 @@ const Endereco = () => {
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Informações do usuário</Label>
           {/* COMPONENTE MENSAGEM DE ERRO */}
-          <Erro props={erro} />
+          {erro && <Erro props={erro} />}
           {/* CAMPO BUSCA DO CEP */}
           <div className="flex flex-col w-full gap-3">
             <Label size="medium">CEP</Label>
@@ -116,12 +132,15 @@ const Endereco = () => {
                   type="text"
                   placeholder="00000-000"
                   maxLength={9}
-                  {...register("cep", { onChange: mascaraCep })}
+                  {...register("cep", {
+                    onChange: mascaraCep,
+                    onBlur: buscarCep,
+                  })}
                 />
                 <Button
                   variant="primary"
                   onClick={buscarCep}
-                  disabled={cep.length !== 9 || loading}
+                  disabled={!ativo || loading}
                   className="relative flex items-center justify-center"
                   style={{ minWidth: "120px" }}
                 >
@@ -223,9 +242,11 @@ const Endereco = () => {
             <Label size="medium">Rua</Label>
             <Input type="text" {...register("rua")} />
             <Label size="medium">Número</Label>
-            <Input type="text" {...register("numero")} />
+            <Input type="number" {...register("numero")} />
           </div>
-          <Button variant="primary" onClick={handleSubmit(onSubmit)}>Avançar</Button>
+          <Button variant="primary" onClick={handleSubmit(onSubmit)}>
+            Avançar
+          </Button>
         </div>
       </form>
     </div>
