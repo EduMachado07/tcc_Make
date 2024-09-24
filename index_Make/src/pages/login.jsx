@@ -2,11 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { authLogin } from "../context/authLogin";
+import validator from "validator";
 // -------- COMPONENTES UI (shadcn)------------
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+
+import Erro from "@/components/componentes/erro";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -26,6 +29,12 @@ const Login = () => {
 
   async function EnviarFormulario(event) {
     event.preventDefault();
+
+    if (!validator.isEmail(email)) {
+      setErro("insira um email válido");
+      return;
+    }
+
     setErro("");
   
     const timeout = 15000;
@@ -34,12 +43,10 @@ const Login = () => {
     );
   
     try {
-      console.log('Enviando requisição com:', { email, senha });
       const res = await Promise.race([
         axios.post("http://localhost:3000/api/login", { email, senha }),
         timeoutPromise,
       ]);
-      console.log('Resposta recebida:', res);
       const user = res.data.user;
   
       if (user) {
@@ -91,25 +98,8 @@ const Login = () => {
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Login</Label>
           {/* MENSAGEM DE ERRO PARA EMAIL E SENHA */}
-          {erro && (
-            <section className="inline-flex gap-1">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-5 stroke-red-500"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-                />
-              </svg>
-              <Label color="alert">{erro}</Label>
-            </section>
-          )}
+          {/* COMPONENTE MENSAGEM DE ERRO */}
+          <Erro props={ erro }/>
           {/* CAMPO EMAIL */}
           <>
             <Label size="medium">Email</Label>
@@ -129,7 +119,7 @@ const Login = () => {
 
               <Input
                 variant="inputIcon"
-                type="email"
+                type="text"
                 value={email}
                 ref={inputEmail}
                 placeholder="user@gmail.com"

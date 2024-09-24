@@ -1,6 +1,6 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { authLogin } from "./context/authLogin";
-import { authEmail } from "./context/authEmail";
+import { authCadastro } from "./context/authCadastro";
 // -------- COMPONENTES UI (shadcn)------------
 import { Button } from "@/components/ui/button";
 import {
@@ -74,7 +74,7 @@ function Navbar() {
 }
 
 function App() {
-  const { email, nome, tel, data } = authEmail();
+  const { email, nome, tel, data } = authCadastro();
 
   return (
     <div className="w-full h-screen">
@@ -84,6 +84,8 @@ function App() {
         <p>Nome: {nome || "N/A"}</p>
         <p>Telefone: {tel || "N/A"}</p>
         <p>Data de Nascimento: {data || "N/A"}</p>
+        <p>Cep: {cep || "N/A"}</p>
+        <p>Numero: {numeroCep || "N/A"}</p>
       </div>
       <Outlet />
     </div>

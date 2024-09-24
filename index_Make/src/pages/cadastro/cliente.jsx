@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { authEmail } from "@/context/authEmail";
+import { authCadastro } from "@/context/authCadastro";
 import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
-
 // -------- COMPONENTES UI (shadcn)------------
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+
+import Erro from "@/components/componentes/erro";
 
 const Cliente = () => {
   const [nome, setNome] = useState("");
@@ -15,8 +16,6 @@ const Cliente = () => {
   const [erro, setErro] = useState("");
   const navigate = useNavigate();
 
-  const { setNome_User, setTelefone_User, setData_Nascimento_User } =
-    authEmail();
   const { setEtapa } = authProtecao_Rotas();
   // ------- TELEFONE USUARIO ---------
   // PARA FORMATAR TELEFONE
@@ -53,14 +52,7 @@ const Cliente = () => {
     setNome(formattedValue);
   };
   // ------- DATA DE NASCIMENTO USUARIO -------
-  // BLOQUEIA UMA DATA INEXISTENTE
-  const dataMaxima = () => {
-    const dataAtual = new Date();
-    const ano = dataAtual.getFullYear();
-    const mes = String(dataAtual.getMonth() + 1).padStart(2, "0");
-    const dia = String(dataAtual.getDate()).padStart(2, "0");
-    return `${ano}-${mes}-${dia}`;
-  };
+
   // VERIFICA SE DATA É MAIOR QUE DATA ATUAL
   // SE CORRETO, GUARDA NO STATE
   const alteraDataNascimento = (event) => {
@@ -92,13 +84,13 @@ const Cliente = () => {
     // CONVERTE DATA PARA GUARDAR NO CONTEXTO
     const dataFormatada = formataData_Contexto(dataNascimento);
     // GUARDA DADOS NO CONTEXTO
-    setNome_User(nome);
-    setTelefone_User(telefone);
-    setData_Nascimento_User(dataFormatada);
+    authCadastro.getState().setUserInfo("nome", nome);
+    authCadastro.getState().setUserInfo("telefone", telefone);
+    authCadastro.getState().setUserInfo("data", dataFormatada);
     // CONTEXTO DE PROTECAO DE ROTAS
     setEtapa(5);
 
-    navigate("../../");
+    navigate("../endereco");
   }
 
   return (
@@ -110,25 +102,8 @@ const Cliente = () => {
         {/* CAMPO NOME DO USUARIO */}
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Informações do usuário</Label>
-          {erro && (
-            <section className="inline-flex gap-1">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-5 stroke-red-500"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-                />
-              </svg>
-              <Label color="alert">{erro}</Label>
-            </section>
-          )}
+          {/* COMPONENTE MENSAGEM DE ERRO */}
+          <Erro props={ erro }/>
           <Label size="medium">Nome Completo</Label>
           <div className="relative">
             <svg
@@ -222,7 +197,7 @@ const Cliente = () => {
               !nome || !telefone || telefone.length !== 15 || !dataNascimento
             }
           >
-            Cadastrar
+            Avançar
           </Button>
         </div>
       </form>

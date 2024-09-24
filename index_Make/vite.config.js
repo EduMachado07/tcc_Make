@@ -9,4 +9,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // server: {
+  //   proxy: {
+  //     '/apiVia_Cep': {
+  //       target: 'https://viacep.com.br',
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/apiVia_Cep/, '')
+  //     }
+  //   }
+  // }
 })

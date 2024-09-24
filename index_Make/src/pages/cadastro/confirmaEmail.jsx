@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { authEmail } from "../../context/authEmail";
+import { authCadastro } from "../../context/authCadastro";
 import { useNavigate } from "react-router-dom";
 import { authProtecao_Rotas } from "../../context/authProtecao_rotas";
 // -------- COMPONENTES UI (shadcn)------------
@@ -11,8 +11,10 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
+import Erro from "@/components/componentes/erro";
+
 const Confirma_Email = () => {
-  const email = authEmail((state) => state.email);
+  const { email } = authCadastro()
   const [codigo, setCodigo] = useState("");
   const [erro, setErro] = useState("");
   const navigate = useNavigate();
@@ -57,7 +59,6 @@ const Confirma_Email = () => {
             , verifique a caixa de entrada e coloque o codigo no campo abaixo
             para validarmos e poder prosseguir com o cadastro.
           </p>
-          {/* <label className="text-base font-base">Código</label> */}
           <div className="flex justify-center">
             <InputOTP
               maxLength={5}
@@ -73,10 +74,10 @@ const Confirma_Email = () => {
                 <InputOTPSlot index={4} />
               </InputOTPGroup>
             </InputOTP>
-
           </div>
         </div>
-            {erro && <p className="text-sm text-red-500">{erro}</p>}
+        {/* COMPONENTE MENSAGEM DE ERRO */}
+        <Erro props={erro} />
         <div className="w-3/4 flex flex-col">
           <Button disabled={codigo.length !== 5} variant="primary">
             Confirmar

@@ -1,18 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authEmail } from "../../context/authEmail";
+import { authCadastro } from "../../context/authCadastro";
 import { authProtecao_Rotas } from "../../context/authProtecao_rotas";
+import validator from "validator";
 // -------- COMPONENTES UI (shadcn)------------
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
+import Erro from "@/components/componentes/erro";
+
 const Email = () => {
   const [email, setEmail] = useState("");
+  const [erro, setErro] = useState("");
   const navigate = useNavigate();
-  const stateEmail = authEmail((state) => state.setEmail);
-  const stateEtapa = authProtecao_Rotas((state) => state.setEtapa);
+  const { setEtapa } = authProtecao_Rotas();
   // INICIA PAGINA COM INPUT FOCADO
   const inputEmail = useRef(null);
   useEffect(() => {
@@ -22,12 +25,18 @@ const Email = () => {
   }, []);
 
   function EnviarFormulario(event) {
+    event.preventDefault();
     const timeout = 2000;
 
-    event.preventDefault();
+    if (!validator.isEmail(email)) {
+      setErro("insira um email válido");
+      return;
+    }
+
+    setErro("");
     setTimeout(() => {
-      stateEmail(email);
-      stateEtapa(2);
+      authCadastro.getState().setUserInfo("email", email);
+      setEtapa(2);
       navigate("../validacao");
     }, timeout);
   }
@@ -41,6 +50,8 @@ const Email = () => {
       >
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Cadastro</Label>
+          {/* COMPONENTE MENSAGEM DE ERRO */}
+          <Erro props={ erro }/>
           <Label size="medium">Email</Label>
           <div className="relative">
             <svg
@@ -57,7 +68,7 @@ const Email = () => {
             </svg>
             <Input
               variant="inputIcon"
-              type="email"
+              type="text"
               value={email}
               placeholder="user@gmail.com"
               onChange={(event) => setEmail(event.target.value)}

@@ -17,6 +17,7 @@ import Confirma_Email from "./pages/cadastro/confirmaEmail.jsx";
 import Tipo_Usuario from "./pages/cadastro/tipoUsuario.jsx";
 import Cliente from "./pages/cadastro/cliente.jsx";
 import Empresa from "./pages/cadastro/empresa.jsx";
+import Endereco from "./pages/cadastro/endereco";
 
 // --------- PROTECAO PARA CADASTRO ------------
 // COMPONENTE REDIRECIONA PARA PAGINA INICIAL
@@ -85,6 +86,10 @@ const Rotas = () => {
         {
           path: "cadastro-empresa",
           element: <ProtecaoRotas pagina={<Empresa />} etapa={4} />,
+        },
+        {
+          path: "endereco",
+          element: <ProtecaoRotas pagina={<Endereco />} etapa={5} />,
         },
       ],
     },
