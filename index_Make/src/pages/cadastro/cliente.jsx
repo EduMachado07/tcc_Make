@@ -90,7 +90,7 @@ const Cliente = () => {
     // CONTEXTO DE PROTECAO DE ROTAS
     setEtapa(5);
 
-    navigate("../endereco");
+    navigate("../cadastro-endereco");
   }
 
   return (

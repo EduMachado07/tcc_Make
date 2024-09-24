@@ -97,7 +97,7 @@ const Endereco = () => {
     } else {
       authCadastro.getState().setUserInfo("cep", data.cep);
       authCadastro.getState().setUserInfo("numeroCep", data.numero);
-      navigate("../../");
+      navigate("../cadastro-senha");
     }
   };
 
@@ -105,7 +105,7 @@ const Endereco = () => {
     <div className="h-full">
       <form className="w-full h-full flex flex-col justify-center items-center gap-6 px-4">
         <div className="flex flex-col w-3/4 gap-3">
-          <Label size="subtitle">Informações do usuário</Label>
+          <Label size="subtitle">Seu endereço</Label>
           {/* COMPONENTE MENSAGEM DE ERRO */}
           {erro && <Erro props={erro} />}
           {/* CAMPO BUSCA DO CEP */}
