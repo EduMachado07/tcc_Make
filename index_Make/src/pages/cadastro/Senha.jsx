@@ -10,20 +10,15 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Erro from "@/components/componentes/erro";
 
 const Senha = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm();
+  const { register, handleSubmit, watch } = useForm();
 
   const [rules, setRules] = useState({
     minLength: false,
     hasUpperCase: false,
-    hasLowerCase: false,
     hasNumber: false,
     hasSymbol: false,
   });
+  const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
 
   // Watch para observar o valor da senha
   const passwordValue = watch("password");
@@ -33,7 +28,6 @@ const Senha = () => {
     const newRules = {
       minLength: passwordValue?.length >= 8,
       hasUpperCase: /[A-Z]/.test(passwordValue),
-      hasLowerCase: /[a-z]/.test(passwordValue),
       hasNumber: /[0-9]/.test(passwordValue),
       hasSymbol: /[^A-Za-z0-9]/.test(passwordValue),
     };
@@ -44,7 +38,6 @@ const Senha = () => {
     return (
       validator.isStrongPassword(value, {
         minLength: 8,
-        minLowercase: 1,
         minUppercase: 1,
         minNumbers: 1,
         minSymbols: 1,
@@ -83,13 +76,10 @@ const Senha = () => {
               variant="inputIcon"
               type="text"
               {...register("password", {
-                required: "Senha é obrigatória",
                 validate: validatePassword,
               })}
             />
           </div>
-          {errors.password && <Erro message={errors.password.message} />}
-
           <Label size="large" className="mt-3">
             Sua senha deve ter pelo menos:
           </Label>
@@ -110,8 +100,25 @@ const Senha = () => {
             <Label size="medium">Um número</Label>
           </div>
 
-          <Button variant="primary" className="mt-2" type="submit">
-            Cadastrar
+          <Button
+            variant="primary"
+            className="relative flex items-center justify-center mt-2"
+            disabled={
+              !rules.minLength ||
+              !rules.hasUpperCase ||
+              !rules.hasSymbol ||
+              !rules.hasNumber
+            }
+          >
+            {btnLoading_Submit ? (
+              <CircularProgress
+                size={20}
+                color="colorPrimary"
+                className="relative inset-0 mt-1"
+              />
+            ) : (
+              "Avançar"
+            )}
           </Button>
         </div>
       </form>

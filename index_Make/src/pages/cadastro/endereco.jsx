@@ -28,13 +28,16 @@ const Endereco = () => {
     setValue,
     watch,
     handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm();
+    formState: { isValid },
+  } = useForm({
+    mode: "onChange",
+  });
   const [erro, setErro] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [btnLoading_Cep, set_btnLoading_Cep] = useState(false);
+  const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
   const [ativo, setAtivo] = useState(false);
   const [estado, setEstado] = useState("");
+  const [cepAnterior, setCepAnterior] = useState("");
   const cep = watch("cep") || "";
   const navigate = useNavigate();
 
@@ -54,10 +57,10 @@ const Endereco = () => {
   };
 
   async function buscarCep(event) {
-    if (cep.length === 9) {
-      event.preventDefault();
-
-      setLoading(true);
+    event.preventDefault();
+    if (cep.length === 9 && cep !== cepAnterior) {
+      
+      set_btnLoading_Cep(true);
       // TEMPO LIMITE DE 3 SEGUNDOS
       const timeout = 3000;
       const timeoutPromise = new Promise((_, reject) =>
@@ -82,23 +85,22 @@ const Endereco = () => {
           setValue("rua", res.data.logradouro);
 
           setErro("");
+          setCepAnterior(cep)
         }
       } catch (error) {
         setErro("Erro ao buscar CEP: " + error.message);
       }
-      // setValue("cep", "");
-      setLoading(false);
+      set_btnLoading_Cep(false);
     }
   }
 
-  const onSubmit = (data) => {
-    if (!data.estado || !data.cidade || !data.bairro || !data.numero) {
-      setErro("Preencha todos os campos para continuar");
-    } else {
-      authCadastro.getState().setUserInfo("cep", data.cep);
-      authCadastro.getState().setUserInfo("numeroCep", data.numero);
-      navigate("../cadastro-senha");
-    }
+  const onSubmit = async (data) => {
+    set_btnLoading_Submit(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    authCadastro.getState().setUserInfo("cep", data.cep);
+    authCadastro.getState().setUserInfo("numeroCep", data.numero);
+    navigate("../cadastro-senha");
+    set_btnLoading_Submit(false);
   };
 
   return (
@@ -140,11 +142,11 @@ const Endereco = () => {
                 <Button
                   variant="primary"
                   onClick={buscarCep}
-                  disabled={!ativo || loading}
+                  disabled={!ativo || btnLoading_Cep || cep === cepAnterior}
                   className="relative flex items-center justify-center"
                   style={{ minWidth: "120px" }}
                 >
-                  {loading ? (
+                  {btnLoading_Cep ? (
                     <CircularProgress
                       size={20}
                       color="colorPrimary"
@@ -234,18 +236,34 @@ const Endereco = () => {
               </div>
               <div className="flex flex-col w-3/4">
                 <Label size="medium">Cidade</Label>
-                <Input type="text" {...register("cidade")} />
+                <Input
+                  type="text"
+                  {...register("cidade", { required: true })}
+                />
               </div>
             </div>
             <Label size="medium">Bairro</Label>
-            <Input type="text" {...register("bairro")} />
+            <Input type="text" {...register("bairro", { required: true })} />
             <Label size="medium">Rua</Label>
-            <Input type="text" {...register("rua")} />
+            <Input type="text" {...register("rua", { required: true })} />
             <Label size="medium">Número</Label>
-            <Input type="number" {...register("numero")} />
+            <Input type="number" {...register("numero", { required: true })} />
           </div>
-          <Button variant="primary" onClick={handleSubmit(onSubmit)}>
-            Avançar
+          <Button
+            variant="primary"
+            onClick={handleSubmit(onSubmit)}
+            disabled={!isValid || !estado}
+            className="relative flex items-center justify-center"
+          >
+            {btnLoading_Submit ? (
+              <CircularProgress
+                size={20}
+                color="colorPrimary"
+                className="relative inset-0 mt-1"
+              />
+            ) : (
+              "Avançar"
+            )}
           </Button>
         </div>
       </form>
