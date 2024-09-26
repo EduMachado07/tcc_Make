@@ -6,6 +6,8 @@ import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+// -------- ( MATERIAL UI )------------
+import CircularProgress from "@mui/material/CircularProgress";
 
 import Erro from "@/components/componentes/erro";
 
@@ -15,6 +17,7 @@ const Cliente = () => {
   const [dataNascimento, setDataNascimento] = useState("");
   const [erro, setErro] = useState("");
   const navigate = useNavigate();
+  const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
 
   const { setEtapa } = authProtecao_Rotas();
   // ------- TELEFONE USUARIO ---------
@@ -65,9 +68,10 @@ const Cliente = () => {
   };
 
   // ------ ENVIA FORMULARIO -------
-  function EnviarFormulario(event) {
+  async function EnviarFormulario(event) {
     event.preventDefault();
-
+    set_btnLoading_Submit(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     const anoSelecionado = parseInt(dataNascimento.split("-")[0], 10);
     const anoAtual = new Date().getFullYear();
     setErro("");
@@ -89,8 +93,9 @@ const Cliente = () => {
     authCadastro.getState().setUserInfo("data", dataFormatada);
     // CONTEXTO DE PROTECAO DE ROTAS
     setEtapa(5);
-
+    
     navigate("../cadastro-endereco");
+    set_btnLoading_Submit(false);
   }
 
   return (
@@ -197,7 +202,15 @@ const Cliente = () => {
               !nome || !telefone || telefone.length !== 15 || !dataNascimento
             }
           >
-            Avançar
+            {btnLoading_Submit ? (
+              <CircularProgress
+                size={20}
+                color="colorPrimary"
+                className="relative inset-0 mt-1"
+              />
+            ) : (
+              "Avançar"
+            )}
           </Button>
         </div>
       </form>

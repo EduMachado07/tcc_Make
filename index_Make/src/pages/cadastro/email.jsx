@@ -8,6 +8,8 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+// -------- ( MATERIAL UI )------------
+import CircularProgress from "@mui/material/CircularProgress";
 
 import Erro from "@/components/componentes/erro";
 
@@ -16,6 +18,7 @@ const Email = () => {
   const [erro, setErro] = useState("");
   const navigate = useNavigate();
   const { setEtapa } = authProtecao_Rotas();
+  const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
   // INICIA PAGINA COM INPUT FOCADO
   const inputEmail = useRef(null);
   useEffect(() => {
@@ -27,18 +30,21 @@ const Email = () => {
   function EnviarFormulario(event) {
     event.preventDefault();
     const timeout = 2000;
-
+    
     if (!validator.isEmail(email)) {
       setErro("insira um email válido");
       return;
     }
-
+    
+    set_btnLoading_Submit(true)
     setErro("");
     setTimeout(() => {
       authCadastro.getState().setUserInfo("email", email);
       setEtapa(2);
       navigate("../validacao");
+      set_btnLoading_Submit(false)
     }, timeout);
+
   }
 
   return (
@@ -51,7 +57,7 @@ const Email = () => {
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Cadastro</Label>
           {/* COMPONENTE MENSAGEM DE ERRO */}
-          <Erro props={ erro }/>
+          <Erro props={erro} />
           <Label size="medium">Email</Label>
           <div className="relative">
             <svg
@@ -78,7 +84,15 @@ const Email = () => {
         {/* BOTAO CADASTRAR */}
         <div className="w-3/4 flex flex-col">
           <Button variant="primary" disabled={!email}>
-            Cadastrar
+          {btnLoading_Submit ? (
+              <CircularProgress
+                size={20}
+                color="colorPrimary"
+                className="relative inset-0 mt-1"
+              />
+            ) : (
+              "Cadastrar"
+            )}
           </Button>
           {/* LINK PARA PAGINA LOGIN */}
           <div className="w-full text-center">

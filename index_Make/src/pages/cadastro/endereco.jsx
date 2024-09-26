@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { authCadastro } from "@/context/authCadastro";
+import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
 // -------- COMPONENTES UI
 // ---------- ( SHADCN ) ------------
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ const Endereco = () => {
   const [cepAnterior, setCepAnterior] = useState("");
   const cep = watch("cep") || "";
   const navigate = useNavigate();
+  const { setEtapa } = authProtecao_Rotas();
 
   useEffect(() => {
     setAtivo(cep.length === 9);
@@ -59,7 +61,7 @@ const Endereco = () => {
   async function buscarCep(event) {
     event.preventDefault();
     if (cep.length === 9 && cep !== cepAnterior) {
-      
+      setErro("");
       set_btnLoading_Cep(true);
       // TEMPO LIMITE DE 3 SEGUNDOS
       const timeout = 3000;
@@ -77,6 +79,12 @@ const Endereco = () => {
         ]);
         if (res.data.erro) {
           setErro("CEP não encontrado");
+          setCepAnterior(cep);
+          setValue("estado", "");
+          setEstado("");
+          setValue("cidade", "");
+          setValue("bairro", "");
+          setValue("rua", "");
         } else {
           setValue("estado", res.data.uf);
           setEstado(`(${res.data.uf}) ${res.data.estado}`);
@@ -85,7 +93,7 @@ const Endereco = () => {
           setValue("rua", res.data.logradouro);
 
           setErro("");
-          setCepAnterior(cep)
+          setCepAnterior(cep);
         }
       } catch (error) {
         setErro("Erro ao buscar CEP: " + error.message);
@@ -97,8 +105,15 @@ const Endereco = () => {
   const onSubmit = async (data) => {
     set_btnLoading_Submit(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    authCadastro.getState().setUserInfo("estado", data.estado);
+    authCadastro.getState().setUserInfo("cidade", data.cidade);
+    authCadastro.getState().setUserInfo("bairro", data.bairro);
+    authCadastro.getState().setUserInfo("rua", data.rua);
+
     authCadastro.getState().setUserInfo("cep", data.cep);
     authCadastro.getState().setUserInfo("numeroCep", data.numero);
+    // CONTEXTO DE PROTECAO DE ROTAS
+    setEtapa(6);
     navigate("../cadastro-senha");
     set_btnLoading_Submit(false);
   };

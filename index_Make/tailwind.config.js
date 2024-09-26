@@ -22,8 +22,8 @@ export default {
 			colorPrimary: '#34597c', 
 			colorPrimary_Shadow: '#3e6a94', 
 			colorSecondary: '#8bc5e5', 
-			colorShadow: '#373636', 
-			colorText: '#212121',
+			colorText: '#5d5d5d', 
+			colorText_Bold: '#000000',
 			colorBack: '#ebebeb',
   			card: {
   				DEFAULT: 'hsl(var(--card))',

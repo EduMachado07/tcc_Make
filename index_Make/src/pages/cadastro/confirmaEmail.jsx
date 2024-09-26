@@ -10,15 +10,18 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+// -------- ( MATERIAL UI )------------
+import CircularProgress from "@mui/material/CircularProgress";
 
 import Erro from "@/components/componentes/erro";
 
 const Confirma_Email = () => {
-  const { email } = authCadastro()
+  const { email } = authCadastro();
   const [codigo, setCodigo] = useState("");
   const [erro, setErro] = useState("");
   const navigate = useNavigate();
   const stateEtapa = authProtecao_Rotas((state) => state.setEtapa);
+  const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
 
   // INICIA PAGINA COM INPUT FOCADO
   const inputEmail = useRef(null);
@@ -28,9 +31,11 @@ const Confirma_Email = () => {
     }
   }, []);
 
-  function EnviarFormulario(event) {
+  const EnviarFormulario = async(event) => {
     event.preventDefault();
     const timeout = 2000;
+    set_btnLoading_Submit(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     setErro("");
     if (codigo == 12345) {
       setTimeout(() => {
@@ -40,6 +45,7 @@ const Confirma_Email = () => {
     } else {
       setErro("Código inválido. Verifique o seu email e tente novamente");
     }
+    set_btnLoading_Submit(false);
   }
 
   return (
@@ -80,7 +86,15 @@ const Confirma_Email = () => {
         <Erro props={erro} />
         <div className="w-3/4 flex flex-col">
           <Button disabled={codigo.length !== 5} variant="primary">
-            Confirmar
+          {btnLoading_Submit ? (
+              <CircularProgress
+                size={20}
+                color="colorPrimary"
+                className="relative inset-0 mt-1"
+              />
+            ) : (
+              "Confirmar"
+            )}
           </Button>
         </div>
       </form>

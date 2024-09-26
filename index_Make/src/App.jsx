@@ -74,7 +74,7 @@ function Navbar() {
 }
 
 function App() {
-  const { email, nome, tel, data, cep, numeroCep } = authCadastro();
+  const { email, nome, tel, data, cep, numeroCep, senha, estado, cidade, bairro, rua } = authCadastro();
 
   return (
     <div className="w-full h-screen">
@@ -86,6 +86,11 @@ function App() {
         <p>Data de Nascimento: {data || "N/A"}</p>
         <p>Cep: {cep || "N/A"}</p>
         <p>Numero: {numeroCep || "N/A"}</p>
+        <p>senha: {senha || "N/A"}</p>
+        <p>estado: {estado || "N/A"}</p>
+        <p>cidade: {cidade || "N/A"}</p>
+        <p>bairro: {bairro || "N/A"}</p>
+        <p>rua: {rua || "N/A"}</p>
       </div>
       <Outlet />
     </div>

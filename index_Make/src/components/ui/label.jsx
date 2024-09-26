@@ -11,6 +11,7 @@ const labelVariants = cva(
       size: {
         small: "text-xs",
         medium: "text-sm",
+        base: "text-base",
         large: "text-lg",
         title: "text-3xl",
         subtitle: "text-2xl mb-2",
@@ -18,7 +19,9 @@ const labelVariants = cva(
       color: {
         default: "text-colorPrimary",
         colorSecondary: "text-colorSecondary",
-        alert: "text-red-500"
+        colorText: "text-colorText",
+        colorText_Bold: "text-colorText_Bold",
+        alert: "text-red-500",
       },
     },
     defaultVariants: {
@@ -28,13 +31,15 @@ const labelVariants = cva(
   }
 );
 
-const Label = React.forwardRef(({ className, size, color, ...props }, ref) => (
-  <LabelPrimitive.Root
-    ref={ref}
-    className={cn(labelVariants({ size, color }), className)}
-    {...props}
-  />
-));
+const Label = React.forwardRef(
+  ({ className, size, color, style, ...props }, ref) => (
+    <LabelPrimitive.Root
+      ref={ref}
+      className={cn(labelVariants({ size, color }), className)}
+      {...props}
+    />
+  )
+);
 Label.displayName = LabelPrimitive.Root.displayName;
 
 export { Label };

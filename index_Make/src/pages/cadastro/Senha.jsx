@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import validator from "validator"; // Certifique-se de instalar o validator
+import { useNavigate } from "react-router-dom";
+import validator from "validator";
+import { authCadastro } from "@/context/authCadastro";
+import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
 // -------- COMPONENTES UI
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import CircularProgress from "@mui/material/CircularProgress";
-import Erro from "@/components/componentes/erro";
 
 const Senha = () => {
   const { register, handleSubmit, watch } = useForm();
@@ -19,9 +21,11 @@ const Senha = () => {
     hasSymbol: false,
   });
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
+  const navigate = useNavigate();
+  const { setEtapa } = authProtecao_Rotas();
 
   // Watch para observar o valor da senha
-  const passwordValue = watch("password");
+  const passwordValue = watch("senha");
 
   // Atualize o estado de regras sempre que a senha mudar
   useEffect(() => {
@@ -45,16 +49,18 @@ const Senha = () => {
     );
   };
 
-  const onSubmit = (data) => {
-    console.log("Form Data", data);
+  const onSubmit = async (data) => {
+    set_btnLoading_Submit(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    authCadastro.getState().setUserInfo("senha", data.senha);
+    navigate("../informacoes");
+    setEtapa(7);
+    set_btnLoading_Submit(false);
   };
 
   return (
     <div className="h-full">
-      <form
-        className="w-full h-full flex flex-col justify-center items-center gap-6 px-4"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <form className="w-full h-full flex flex-col justify-center items-center gap-6 px-4">
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Cadastre sua senha</Label>
           <div className="relative">
@@ -75,7 +81,7 @@ const Senha = () => {
             <Input
               variant="inputIcon"
               type="text"
-              {...register("password", {
+              {...register("senha", {
                 validate: validatePassword,
               })}
             />
@@ -109,6 +115,7 @@ const Senha = () => {
               !rules.hasSymbol ||
               !rules.hasNumber
             }
+            onClick={handleSubmit(onSubmit)}
           >
             {btnLoading_Submit ? (
               <CircularProgress

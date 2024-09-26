@@ -7,7 +7,7 @@ type AuthStore = {
 
 
 export const authProtecao_Rotas = create<AuthStore>((set) => ({
-    etapa: 6,
+    etapa: 1,
     setEtapa: () => set((state) => ({
         etapa: state.etapa + 1
     }))

@@ -19,6 +19,7 @@ import Cliente from "./pages/cadastro/cliente.jsx";
 import Empresa from "./pages/cadastro/empresa.jsx";
 import Endereco from "./pages/cadastro/endereco";
 import Senha from "./pages/cadastro/Senha";
+import Informacoes from "./pages/cadastro/informacoes";
 
 // --------- PROTECAO PARA CADASTRO ------------
 // COMPONENTE REDIRECIONA PARA PAGINA INICIAL
@@ -94,7 +95,11 @@ const Rotas = () => {
         },
         {
           path: "cadastro-senha",
-          element: <ProtecaoRotas pagina={<Senha />} etapa={5} />,
+          element: <ProtecaoRotas pagina={<Senha />} etapa={6} />,
+        },
+        {
+          path: "informacoes",
+          element: <ProtecaoRotas pagina={<Informacoes />} etapa={7} />,
         },
       ],
     },

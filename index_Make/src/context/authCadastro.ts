@@ -6,7 +6,13 @@ type AuthStore = {
   tel: string | null;
   data: string | null;
   cep: number | null;
-  numeroCep: number | null;
+  cep_Numero:  | null;
+  senha: string | null;
+
+  estado: string | null;
+  cidade: string | null;
+  bairro: string | null;
+  rua: string | null;
 
   setUserInfo: (field: keyof Omit<AuthStore, 'setUserInfo'>, value: number | string | null) => void;
 };
@@ -29,7 +35,13 @@ export const authCadastro = create<AuthStore>((set) => {
   const tel = getFromLocalStorage("tel") || null;
   const data = getFromLocalStorage("data") || null;
   const cep = getFromLocalStorage("cep") || null;
-  const numeroCep = getFromLocalStorage("numeroCep") || null;
+  const cep_Numero = getFromLocalStorage("cep_Numero") || null;
+  const senha = getFromLocalStorage("senha") || null;
+
+  const estado = getFromLocalStorage("estado") || null;
+  const cidade = getFromLocalStorage("cidade") || null;
+  const bairro = getFromLocalStorage("bairro") || null;
+  const rua = getFromLocalStorage("rua") || null;
 
   return {
     email,
@@ -37,11 +49,17 @@ export const authCadastro = create<AuthStore>((set) => {
     tel,
     data,
     cep,
-    numeroCep,
+    cep_Numero,
+    senha,
+
+    estado,
+    cidade,
+    bairro,
+    rua,
 
     // Função única para atualizar qualquer campo e armazenar no localStorage
     setUserInfo: (field, value) => {
-      localStorage.setItem(field, JSON.stringify(value)); // Armazena o valor no localStorage
+      localStorage.setItem(field, JSON.stringify(value)); 
       set({ [field]: value }); // Atualiza o estado dinamicamente
     },
   };
