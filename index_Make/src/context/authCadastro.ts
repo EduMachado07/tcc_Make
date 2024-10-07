@@ -6,7 +6,7 @@ type AuthStore = {
   tel: string | null;
   data: string | null;
   cep: number | null;
-  cep_Numero:  | null;
+  numero: number | null;
   senha: string | null;
 
   estado: string | null;
@@ -35,7 +35,7 @@ export const authCadastro = create<AuthStore>((set) => {
   const tel = getFromLocalStorage("tel") || null;
   const data = getFromLocalStorage("data") || null;
   const cep = getFromLocalStorage("cep") || null;
-  const cep_Numero = getFromLocalStorage("cep_Numero") || null;
+  const numero = getFromLocalStorage("numero") || null;
   const senha = getFromLocalStorage("senha") || null;
 
   const estado = getFromLocalStorage("estado") || null;
@@ -49,7 +49,7 @@ export const authCadastro = create<AuthStore>((set) => {
     tel,
     data,
     cep,
-    cep_Numero,
+    numero,
     senha,
 
     estado,

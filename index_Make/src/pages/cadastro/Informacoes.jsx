@@ -16,9 +16,8 @@ const Informacoes = () => {
     email,
     nome,
     tel,
-    data,
     cep,
-    cep_Numero,
+    numero,
     senha,
     estado,
     cidade,
@@ -28,10 +27,7 @@ const Informacoes = () => {
   const [isSenha, set_isSenha] = useState(true);
 
   const mostrarSenha = () => {
-    set_isSenha(true);
-  };
-  const ocultarSenha = () => {
-    set_isSenha(false);
+    set_isSenha((prev) => !prev);
   };
 
   const onSubmit = async (event) => {
@@ -74,7 +70,7 @@ const Informacoes = () => {
                 </Label>
                 <div className="flex-grow relative flex items-center w-full">
                   <div
-                    onMouseDown={ocultarSenha}
+                    onMouseDown={mostrarSenha}
                     onMouseUp={mostrarSenha}
                     className="absolute cursor-pointer right-2"
                   >
@@ -117,7 +113,7 @@ const Informacoes = () => {
                   </div>
                   <Input
                     type={isSenha ? "password" : "text"}
-                    value={senha || "null"}
+                    value={senha || "Não disponível"}
                     readOnly
                   />
                 </div>
@@ -133,7 +129,11 @@ const Informacoes = () => {
                 <Label size="base" color="colorText_Bold">
                   CEP:
                 </Label>
-                <Input className="flex-grow" value={cep || "null"} readOnly />
+                <Input
+                  className="flex-grow"
+                  value={cep || "Não disponível"}
+                  readOnly
+                />
               </section>
               <div className="w-full flex gap-8">
                 <section className="flex items-center w-1/4 gap-2">
@@ -142,7 +142,7 @@ const Informacoes = () => {
                   </Label>
                   <Input
                     className="flex-grow"
-                    value={estado || "null"}
+                    value={estado || "Não disponível"}
                     readOnly
                   />
                 </section>
@@ -152,7 +152,7 @@ const Informacoes = () => {
                   </Label>
                   <Input
                     className="flex-grow"
-                    value={cidade || "null"}
+                    value={cidade || "Não disponível"}
                     readOnly
                   />
                 </section>
@@ -161,21 +161,33 @@ const Informacoes = () => {
                 <Label size="base" color="colorText_Bold">
                   Bairro:
                 </Label>
-                <Input className="flex-grow" value={bairro || "null"} readOnly />
+                <Input
+                  className="flex-grow"
+                  value={bairro || "Não disponível"}
+                  readOnly
+                />
               </section>
-              <div className="w-full flex gap-8">
-              <section className="flex items-center w-3/4 gap-2">
-                <Label size="base" color="colorText_Bold">
-                  Rua:
-                </Label>
-                <Input className="flex-grow" value={rua || "null"} readOnly />
-              </section>
-              <section className="flex items-center w-2/4 gap-2">
-                <Label size="base" color="colorText_Bold">
-                  Numero:
-                </Label>
-                <Input className="flex-grow" value={cep_Numero || "null"} readOnly />
-              </section>
+              <div className="w-full flex gap-2">
+                <section className="flex items-center w-3/4 gap-2">
+                  <Label size="base" color="colorText_Bold">
+                    Rua:
+                  </Label>
+                  <Input
+                    className="flex-grow"
+                    value={rua || "Não disponível"}
+                    readOnly
+                  />
+                </section>
+                <section className="flex items-center w-2/4 gap-2">
+                  <Label size="base" color="colorText_Bold">
+                    Numero:
+                  </Label>
+                  <Input
+                    className="flex-grow"
+                    value={numero || "Não disponível"}
+                    readOnly
+                  />
+                </section>
               </div>
             </div>
           </section>

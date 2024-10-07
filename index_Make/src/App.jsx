@@ -63,7 +63,9 @@ function Navbar() {
             <DropdownMenuItem>Billing</DropdownMenuItem>
             <DropdownMenuItem>Team</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={Deslogar}>Sair da Conta</DropdownMenuItem>
+            <DropdownMenuItem onClick={Deslogar}>
+              Sair da Conta
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
@@ -74,7 +76,19 @@ function Navbar() {
 }
 
 function App() {
-  const { email, nome, tel, data, cep, numeroCep, senha, estado, cidade, bairro, rua } = authCadastro();
+  const {
+    email,
+    nome,
+    tel,
+    data,
+    cep,
+    numero,
+    senha,
+    estado,
+    cidade,
+    bairro,
+    rua,
+  } = authCadastro();
 
   return (
     <div className="w-full h-screen">
@@ -85,7 +99,7 @@ function App() {
         <p>Telefone: {tel || "N/A"}</p>
         <p>Data de Nascimento: {data || "N/A"}</p>
         <p>Cep: {cep || "N/A"}</p>
-        <p>Numero: {numeroCep || "N/A"}</p>
+        <p>Numero: {numero || "N/A"}</p>
         <p>senha: {senha || "N/A"}</p>
         <p>estado: {estado || "N/A"}</p>
         <p>cidade: {cidade || "N/A"}</p>

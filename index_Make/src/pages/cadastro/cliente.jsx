@@ -6,6 +6,13 @@ import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 // -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -14,7 +21,9 @@ import Erro from "@/components/componentes/erro";
 const Cliente = () => {
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
-  const [dataNascimento, setDataNascimento] = useState("");
+  const [dia, setDia] = useState("");
+  const [mes, setMes] = useState("");
+  const [ano, setAno] = useState("");
   const [erro, setErro] = useState("");
   const navigate = useNavigate();
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
@@ -55,45 +64,38 @@ const Cliente = () => {
     setNome(formattedValue);
   };
   // ------- DATA DE NASCIMENTO USUARIO -------
-
-  // VERIFICA SE DATA É MAIOR QUE DATA ATUAL
-  // SE CORRETO, GUARDA NO STATE
-  const alteraDataNascimento = (event) => {
-    setDataNascimento(event.target.value);
+  const formataData_Contexto = () => {
+    return`${dia}/${mes}/${ano}`;
   };
-  // CONVERTE 'AAAA-MM-DD' PARA 'DD/MM/YYYY'
-  const formataData_Contexto = (data) => {
-    const [ano, mes, dia] = data.split("-");
-    return `${dia}/${mes}/${ano}`;
-  };
+  const isDataNascimentoPreenchida = dia && mes && ano;
 
   // ------ ENVIA FORMULARIO -------
   async function EnviarFormulario(event) {
     event.preventDefault();
     set_btnLoading_Submit(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    const anoSelecionado = parseInt(dataNascimento.split("-")[0], 10);
+
     const anoAtual = new Date().getFullYear();
     setErro("");
-    const anoMinimo = anoAtual - 100;
+    const anoMinimo = anoAtual - 90;
     // VERIFICA O ANO INDICADO
-    if (parseInt(anoSelecionado, 10) > anoAtual) {
+    if (ano > anoAtual) {
       setErro("Ano indicado é maior que o ano atual");
       return;
     }
-    if (parseInt(anoSelecionado, 10) < anoMinimo) {
+    if (ano < anoMinimo) {
       setErro("Ano indicado é muito distante");
       return;
     }
     // CONVERTE DATA PARA GUARDAR NO CONTEXTO
-    const dataFormatada = formataData_Contexto(dataNascimento);
+    const dataFormatada = formataData_Contexto();
     // GUARDA DADOS NO CONTEXTO
     authCadastro.getState().setUserInfo("nome", nome);
     authCadastro.getState().setUserInfo("telefone", telefone);
     authCadastro.getState().setUserInfo("data", dataFormatada);
     // CONTEXTO DE PROTECAO DE ROTAS
     setEtapa(5);
-    
+
     navigate("../cadastro-endereco");
     set_btnLoading_Submit(false);
   }
@@ -108,7 +110,7 @@ const Cliente = () => {
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Informações do usuário</Label>
           {/* COMPONENTE MENSAGEM DE ERRO */}
-          <Erro props={ erro }/>
+          <Erro props={erro} />
           <Label size="medium">Nome Completo</Label>
           <div className="relative">
             <svg
@@ -138,35 +140,53 @@ const Cliente = () => {
         {/* CAMPO DATA DE NASCIMENTO */}
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="medium">Data de nascimento</Label>
-          <div className="relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-5 stroke-colorPrimary absolute inset-y-2 left-1.5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+          <div className="w-full flex gap-7">
+            <section className="flex items-center w-1/4 gap-1">
+              <Label size="medium" color="colorText">
+                Dia
+              </Label>
+              <Input
+                className="flex-grow"
+                value={dia}
+                onChange={(e) => setDia(e.target.value)}
+                maxLength={2}
               />
-            </svg>
-            <style jsx>{`
-              input[type="date"]::-webkit-calendar-picker-indicator {
-                display: none;
-              }
-              input[type="date"] {
-                -moz-appearance: textfield;
-              }
-            `}</style>
-            <Input
-              variant="inputIcon"
-              type="date"
-              value={dataNascimento}
-              onChange={alteraDataNascimento}
-            />
+            </section>
+            <section className="flex items-center w-2/4 gap-1">
+              <Label size="medium" color="colorText">
+                Mês
+              </Label>
+              <Select onValueChange={(value) => setMes(value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="max-h-56 overflow-y-auto">
+                  <SelectItem value="01">Janeiro</SelectItem>
+                  <SelectItem value="02">Fevereiro</SelectItem>
+                  <SelectItem value="03">Março</SelectItem>
+                  <SelectItem value="04">Abril</SelectItem>
+                  <SelectItem value="05">Maio</SelectItem>
+                  <SelectItem value="06">Junho</SelectItem>
+                  <SelectItem value="07">Julho</SelectItem>
+                  <SelectItem value="08">Agosto</SelectItem>
+                  <SelectItem value="09">Setembro</SelectItem>
+                  <SelectItem value="10">Outubro</SelectItem>
+                  <SelectItem value="11">Novembro</SelectItem>
+                  <SelectItem value="12">Dezembro</SelectItem>
+                </SelectContent>
+              </Select>
+            </section>
+            <section className="flex items-center w-1/4 gap-1">
+              <Label size="medium" color="colorText">
+                Ano
+              </Label>
+              <Input
+                className="flex-grow"
+                value={ano}
+                onChange={(e) => setAno(e.target.value)}
+                maxLength={4}
+              />
+            </section>
           </div>
         </div>
         {/* CAMPO TELEFONE */}
@@ -199,7 +219,7 @@ const Cliente = () => {
           <Button
             variant="primary"
             disabled={
-              !nome || !telefone || telefone.length !== 15 || !dataNascimento
+              !nome || !telefone || telefone.length !== 15 || !isDataNascimentoPreenchida
             }
           >
             {btnLoading_Submit ? (

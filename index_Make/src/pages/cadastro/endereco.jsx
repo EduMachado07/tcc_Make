@@ -111,7 +111,7 @@ const Endereco = () => {
     authCadastro.getState().setUserInfo("rua", data.rua);
 
     authCadastro.getState().setUserInfo("cep", data.cep);
-    authCadastro.getState().setUserInfo("numeroCep", data.numero);
+    authCadastro.getState().setUserInfo("numero", data.numero);
     // CONTEXTO DE PROTECAO DE ROTAS
     setEtapa(6);
     navigate("../cadastro-senha");
