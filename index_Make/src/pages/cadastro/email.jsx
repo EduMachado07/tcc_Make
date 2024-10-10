@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { authCadastro } from "../../context/authCadastro";
 import { authProtecao_Rotas } from "../../context/authProtecao_rotas";
 import validator from "validator";
+import axios from "axios";
 // -------- COMPONENTES UI (shadcn)------------
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -29,7 +30,12 @@ const Email = () => {
 
   function EnviarFormulario(event) {
     event.preventDefault();
-    const timeout = 2000;
+
+    // DEFINE TEMPO LIMITE
+    const timeout = 15000;
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
+    );
     
     if (!validator.isEmail(email)) {
       setErro("insira um email válido");

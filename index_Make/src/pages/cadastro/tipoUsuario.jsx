@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authProtecao_Rotas } from "../../context/authProtecao_rotas";
+import { authCadastro } from "../../context/authCadastro";
 // -------- COMPONENTES UI (shadcn)------------
 import { Button } from "@/components/ui/button";
 
@@ -15,8 +16,11 @@ const Tipo_Usuario = () => {
   function EnviarUsuario() {
     stateEtapa(4);
     if (user === "cliente") {
+      authCadastro.getState().setUserInfo("user", user);
       navigate("../cadastro-cliente");
     } else if (user === "empresa") {
+      authCadastro.getState().setUserInfo("user", user);
+      // console.log(`tipo: ${user}`)
       navigate("../cadastro-empresa");
     } else {
       setErro("selecione um tipo de usuário.");

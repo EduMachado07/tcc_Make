@@ -56,7 +56,6 @@ const Login = () => {
         setErro("Usuário não encontrado");
       }
     } catch (error) {
-      console.log('Erro na requisição:', error);
       if (error.response) {
         setErro(`Erro na resposta: ${error.response.data.error}`);
       } else if (error.request) {

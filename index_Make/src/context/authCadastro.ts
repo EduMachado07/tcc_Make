@@ -4,17 +4,21 @@ type AuthStore = {
   email: string | null;
   nome: string | null;
   tel: string | null;
-  data: string | null;
+  dataNascimento: string | null;
   cep: number | null;
   numero: number | null;
   senha: string | null;
+  empresa: string | null;
 
   estado: string | null;
   cidade: string | null;
   bairro: string | null;
   rua: string | null;
 
+  user: string | null;
+
   setUserInfo: (field: keyof Omit<AuthStore, 'setUserInfo'>, value: number | string | null) => void;
+  removeUserInfo: (field: keyof Omit<AuthStore, 'setUserInfo' | 'deleteUserInfo'>) => void;
 };
 
 export const authCadastro = create<AuthStore>((set) => {
@@ -33,7 +37,7 @@ export const authCadastro = create<AuthStore>((set) => {
   const email = getFromLocalStorage("email") || null;
   const nome = getFromLocalStorage("nome") || null;
   const tel = getFromLocalStorage("tel") || null;
-  const data = getFromLocalStorage("data") || null;
+  const dataNascimento = getFromLocalStorage("dataNascimento") || null;
   const cep = getFromLocalStorage("cep") || null;
   const numero = getFromLocalStorage("numero") || null;
   const senha = getFromLocalStorage("senha") || null;
@@ -42,16 +46,19 @@ export const authCadastro = create<AuthStore>((set) => {
   const cidade = getFromLocalStorage("cidade") || null;
   const bairro = getFromLocalStorage("bairro") || null;
   const rua = getFromLocalStorage("rua") || null;
+  const empresa = getFromLocalStorage("empresa") || null;
+  const user = getFromLocalStorage("user") || null;
 
   return {
     email,
     nome,
     tel,
-    data,
+    dataNascimento,
     cep,
     numero,
     senha,
-
+    empresa,
+    user,
     estado,
     cidade,
     bairro,
@@ -60,7 +67,11 @@ export const authCadastro = create<AuthStore>((set) => {
     // Função única para atualizar qualquer campo e armazenar no localStorage
     setUserInfo: (field, value) => {
       localStorage.setItem(field, JSON.stringify(value)); 
-      set({ [field]: value }); // Atualiza o estado dinamicamente
+      set({ [field]: value });
+    },
+    removeUserInfo: (field) => {
+      localStorage.removeItem(field); 
+      set({ [field]: null });
     },
   };
 });

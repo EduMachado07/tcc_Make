@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authCadastro } from "@/context/authCadastro";
+import axios from "axios";
 // -------- COMPONENTES UI
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -16,26 +17,116 @@ const Informacoes = () => {
     email,
     nome,
     tel,
-    cep,
+
+    cep, // verificar isso
+
     numero,
     senha,
     estado,
     cidade,
     bairro,
     rua,
+    empresa,
+    user,
+    dataNascimento,
   } = authCadastro();
-  const [isSenha, set_isSenha] = useState(true);
 
+  // --- FUNCAO PARA ICONE DA SENHA ---
+  // MOSTRA SENHA
+  const [isSenha, set_isSenha] = useState(true);
   const mostrarSenha = () => {
     set_isSenha((prev) => !prev);
   };
 
-  const onSubmit = async (event) => {
+  // ----- ENVIA DADOS PARA API ----------
+  const onSubmit = async () => {
     event.preventDefault();
     set_btnLoading_Submit(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    navigate("../..");
-    set_btnLoading_Submit(false);
+
+    // CRIA OBJETO USUARIO
+    const usuario = { email, senha, user };
+    const dataUser = {
+      nome,
+      tel,
+      estado,
+      cidade,
+      bairro,
+      rua,
+      numero,
+      empresa,
+      dataNascimento,
+    };
+
+    try {
+      const timeout = 15000;
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
+      );
+
+      // ENVIA DADOS PARA TABELA CLIENTE
+      if (user === "cliente") {
+        const cliente = await Promise.race([
+          axios.post(
+            "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/Clientes",
+            {
+              nome: dataUser.nome,
+              endereco: `${dataUser.rua}, ${dataUser.numero}, ${dataUser.bairro} - ${dataUser.cidade} (${dataUser.estado})`,
+              telefone: dataUser.tel,
+              dataNascimento: dataUser.dataNascimento,
+            }
+          ),
+          timeoutPromise,
+        ]);
+        // GUARDA ID DO CLIENTE PARA TABELA USUARIO
+        const idCliente = cliente.data.id;
+        
+        console.log("cliente cadastrado");
+        
+        // CRIA USUARIO COM ID CLIENTE
+        await Promise.race([
+          axios.post(
+            "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/usuarios",
+            { email: usuario.email, senha: usuario.senha, tipoUsuario: usuario.user, idCliente: idCliente}
+          ),
+          timeoutPromise,
+        ]);
+        console.log("usuario cadastrado");
+      }
+      // ENVIA DADOS PARA TABELA EMPRESA
+      if (user === "empresa") {
+        const empresa = await Promise.race([
+          axios.post(
+            "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/Clientes",
+            {
+              nome: dataUser.nome,
+              empresa: dataUser.empresa,
+              endereco: `${dataUser.rua}, ${dataUser.numero}, ${dataUser.bairro} - ${dataUser.cidade} (${dataUser.estado})`,
+              telefone: dataUser.tel,
+            }
+          ),
+          timeoutPromise,
+        ]);
+        // GUARDA ID DA EMPRESA PARA TABELA USUARIO
+        const idEmpresa = empresa.data.id;
+        
+        console.log("EMPRESA cadastrado");
+        
+        // CRIA USUARIO COM ID CLIENTE
+        await Promise.race([
+          axios.post(
+            "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/usuarios",
+            { email: usuario.email, senha: usuario.senha, tipoUsuario: usuario.user, idCliente: idEmpresa}
+          ),
+          timeoutPromise,
+        ]);
+        console.log("USUARIO cadastrada");
+      }
+    } catch (error) {
+      console.error("Erro ao criar usuário:", error);
+      navigate("../../erro");
+    } finally {
+      set_btnLoading_Submit(false);
+    }
   };
 
   return (
@@ -59,6 +150,19 @@ const Informacoes = () => {
                 <Input className="flex-grow" value={nome || "null"} readOnly />
               </section>
 
+              {empresa && (
+                <section className="flex items-center w-full gap-2">
+                  <Label size="base" color="colorText_Bold">
+                    Empresa:
+                  </Label>
+                  <Input
+                    className="flex-grow"
+                    value={empresa || "null"}
+                    readOnly
+                  />
+                </section>
+              )}
+
               <section className="flex items-center w-full gap-2">
                 <Label size="base" color="colorText_Bold">
                   Telefone:
@@ -70,8 +174,7 @@ const Informacoes = () => {
                 </Label>
                 <div className="flex-grow relative flex items-center w-full">
                   <div
-                    onMouseDown={mostrarSenha}
-                    onMouseUp={mostrarSenha}
+                    onClick={mostrarSenha}
                     className="absolute cursor-pointer right-2"
                   >
                     {isSenha ? (
@@ -81,7 +184,7 @@ const Informacoes = () => {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="size-5 stroke-colorPrimary"
+                        className="size-5 stroke-colorPrimary bg-colorBack"
                       >
                         <path
                           strokeLinecap="round"
@@ -101,7 +204,7 @@ const Informacoes = () => {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="size-5 stroke-colorPrimary"
+                        className="size-5 stroke-colorPrimary bg-colorBack"
                       >
                         <path
                           strokeLinecap="round"
@@ -196,6 +299,7 @@ const Informacoes = () => {
             className="relative flex items-center justify-center mt-2"
             type="submit"
             onClick={onSubmit}
+            disabled={btnLoading_Submit}
           >
             {btnLoading_Submit ? (
               <CircularProgress

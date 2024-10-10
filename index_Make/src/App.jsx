@@ -88,7 +88,23 @@ function App() {
     cidade,
     bairro,
     rua,
+    removeUserInfo
   } = authCadastro();
+
+  function clearAllUserInfo() {
+    removeUserInfo("email");
+    removeUserInfo("nome");
+    removeUserInfo("tel");
+    removeUserInfo("data");
+    removeUserInfo("cep");
+    removeUserInfo("numero");
+    removeUserInfo("senha");
+    removeUserInfo("estado");
+    removeUserInfo("cidade");
+    removeUserInfo("bairro");
+    removeUserInfo("rua");
+    removeUserInfo("empresa");
+  }
 
   return (
     <div className="w-full h-screen">
@@ -105,6 +121,7 @@ function App() {
         <p>cidade: {cidade || "N/A"}</p>
         <p>bairro: {bairro || "N/A"}</p>
         <p>rua: {rua || "N/A"}</p>
+        <Button onClick={clearAllUserInfo}>Remover</Button>
       </div>
       <Outlet />
     </div>

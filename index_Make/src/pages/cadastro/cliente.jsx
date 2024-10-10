@@ -65,9 +65,19 @@ const Cliente = () => {
   };
   // ------- DATA DE NASCIMENTO USUARIO -------
   const formataData_Contexto = () => {
-    return`${dia}/${mes}/${ano}`;
+    return `${dia}-${mes}-${ano}`;
   };
   const isDataNascimentoPreenchida = dia && mes && ano;
+
+  // Gerar os dias (1 a 31)
+  const dias = Array.from({ length: 31 }, (_, i) =>
+    String(i + 1).padStart(2, "0")
+  );
+  // Gerar os anos (1924 até o ano atual)
+  const anoAtual = new Date().getFullYear();
+  const anos = Array.from({ length: anoAtual - 1924 + 1 }, (_, i) =>
+    String(anoAtual - i)
+  );
 
   // ------ ENVIA FORMULARIO -------
   async function EnviarFormulario(event) {
@@ -75,24 +85,25 @@ const Cliente = () => {
     set_btnLoading_Submit(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const anoAtual = new Date().getFullYear();
     setErro("");
     const anoMinimo = anoAtual - 90;
     // VERIFICA O ANO INDICADO
     if (ano > anoAtual) {
       setErro("Ano indicado é maior que o ano atual");
+      set_btnLoading_Submit(false);
       return;
     }
     if (ano < anoMinimo) {
       setErro("Ano indicado é muito distante");
+      set_btnLoading_Submit(false);
       return;
     }
     // CONVERTE DATA PARA GUARDAR NO CONTEXTO
     const dataFormatada = formataData_Contexto();
     // GUARDA DADOS NO CONTEXTO
     authCadastro.getState().setUserInfo("nome", nome);
-    authCadastro.getState().setUserInfo("telefone", telefone);
-    authCadastro.getState().setUserInfo("data", dataFormatada);
+    authCadastro.getState().setUserInfo("tel", telefone);
+    authCadastro.getState().setUserInfo("dataNascimento", dataFormatada);
     // CONTEXTO DE PROTECAO DE ROTAS
     setEtapa(5);
 
@@ -134,6 +145,7 @@ const Cliente = () => {
               value={nome}
               placeholder="Nome completo"
               onChange={alterarNome}
+              maxLength={100}
             />
           </div>
         </div>
@@ -142,23 +154,23 @@ const Cliente = () => {
           <Label size="medium">Data de nascimento</Label>
           <div className="w-full flex gap-7">
             <section className="flex items-center w-1/4 gap-1">
-              <Label size="medium" color="colorText">
-                Dia
-              </Label>
-              <Input
-                className="flex-grow"
-                value={dia}
-                onChange={(e) => setDia(e.target.value)}
-                maxLength={2}
-              />
+              <Select onValueChange={(value) => setDia(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="dia" />
+                </SelectTrigger>
+                <SelectContent className="max-h-56 overflow-y-auto">
+                  {dias.map((dia) =>( 
+                    <SelectItem key={dia} value={dia}>
+                      {dia}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </section>
             <section className="flex items-center w-2/4 gap-1">
-              <Label size="medium" color="colorText">
-                Mês
-              </Label>
               <Select onValueChange={(value) => setMes(value)}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="mês" />
                 </SelectTrigger>
                 <SelectContent className="max-h-56 overflow-y-auto">
                   <SelectItem value="01">Janeiro</SelectItem>
@@ -177,15 +189,18 @@ const Cliente = () => {
               </Select>
             </section>
             <section className="flex items-center w-1/4 gap-1">
-              <Label size="medium" color="colorText">
-                Ano
-              </Label>
-              <Input
-                className="flex-grow"
-                value={ano}
-                onChange={(e) => setAno(e.target.value)}
-                maxLength={4}
-              />
+              <Select onValueChange={(value) => setAno(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="ano" />
+                </SelectTrigger>
+                <SelectContent className="max-h-56 overflow-y-auto">
+                  {anos.map((anos) =>( 
+                    <SelectItem key={anos} value={anos}>
+                      {anos}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </section>
           </div>
         </div>
@@ -219,7 +234,10 @@ const Cliente = () => {
           <Button
             variant="primary"
             disabled={
-              !nome || !telefone || telefone.length !== 15 || !isDataNascimentoPreenchida
+              !nome ||
+              !telefone ||
+              telefone.length !== 15 ||
+              !isDataNascimentoPreenchida
             }
           >
             {btnLoading_Submit ? (

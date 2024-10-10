@@ -76,7 +76,7 @@ CREATE TABLE Usuarios (
     UsuarioID INT AUTO_INCREMENT PRIMARY KEY,  -- Identificador único do usuário
     Email VARCHAR(100) UNIQUE NOT NULL,        -- Email do usuário (único)
     Senha VARCHAR(255) NOT NULL,               -- Senha do usuário
-    TipoUsuario ENUM('Cliente', 'Funcionario') NOT NULL,  -- Tipo de usuário: Cliente ou Funcionario
+    TipoUsuario ENUM('Cliente', 'Empresa') NOT NULL,  -- Tipo de usuário: Cliente ou Funcionario
     ClienteID INT NULL,                        -- Referência opcional ao ClienteID
     FuncionarioID INT NULL,                    -- Referência opcional ao FuncionarioID
     FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID),  -- Chave estrangeira para Clientes
