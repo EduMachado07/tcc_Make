@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { authCadastro } from "@/context/authCadastro";
 import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
@@ -6,23 +6,16 @@ import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 // -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
-
-import Erro from "@/components/componentes/erro";
+// ----- BIBLIOTECA DE ANIMACAO ------
+import { motion } from "framer-motion";
 
 const Empresa = () => {
+  // ESTADOS
   const [nome, setNome] = useState("");
   const [empresa, setEmpresa] = useState("");
   const [telefone, setTelefone] = useState("");
-  const [erro, setErro] = useState("");
   const navigate = useNavigate();
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
 
@@ -70,26 +63,38 @@ const Empresa = () => {
     setEmpresa(formattedValue);
   };
 
+  // INICIA PAGINA COM INPUT FOCADO
+  const inputNome = useRef(null);
+  useEffect(() => {
+    if (inputNome.current) {
+      inputNome.current.focus();
+    }
+  }, []);
+
   // ------ ENVIA FORMULARIO -------
   async function EnviarFormulario(event) {
     event.preventDefault();
-    set_btnLoading_Submit(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    setErro("");
+    set_btnLoading_Submit(true);
     // GUARDA DADOS NO CONTEXTO
     authCadastro.getState().setUserInfo("nome", nome);
     authCadastro.getState().setUserInfo("empresa", empresa);
     authCadastro.getState().setUserInfo("tel", telefone);
     // CONTEXTO DE PROTECAO DE ROTAS
     setEtapa(5);
-
     navigate("../cadastro-endereco");
+
     set_btnLoading_Submit(false);
   }
 
   return (
-    <div className="h-full">
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.3 }}
+      className="h-full"
+    >
       <form
         className=" w-full h-full flex flex-col justify-center items-center gap-6 px-4"
         onSubmit={EnviarFormulario}
@@ -97,8 +102,6 @@ const Empresa = () => {
         {/* CAMPO NOME DO USUARIO */}
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Informações do usuário</Label>
-          {/* COMPONENTE MENSAGEM DE ERRO */}
-          <Erro props={erro} />
           <Label size="medium">Nome Completo</Label>
           <div className="relative">
             <svg
@@ -120,6 +123,7 @@ const Empresa = () => {
               variant="inputIcon"
               type="text"
               value={nome}
+              ref={inputNome}
               placeholder="Nome completo"
               onChange={alterarNome}
               maxLength={100}
@@ -185,7 +189,13 @@ const Empresa = () => {
           </div>
           <Button
             variant="primary"
-            disabled={!nome || !telefone || telefone.length !== 15 || !empresa}
+            disabled={
+              !nome ||
+              !telefone ||
+              telefone.length !== 15 ||
+              !empresa ||
+              btnLoading_Submit
+            }
           >
             {btnLoading_Submit ? (
               <CircularProgress
@@ -199,7 +209,7 @@ const Empresa = () => {
           </Button>
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

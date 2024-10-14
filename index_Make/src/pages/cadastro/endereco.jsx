@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+// CONTEXTOS
 import { authCadastro } from "@/context/authCadastro";
 import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
 // -------- COMPONENTES UI
@@ -20,8 +21,10 @@ import {
 } from "@/components/ui/select";
 // -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
-
+// -------- COMPONENTE ERRO
 import Erro from "@/components/componentes/erro";
+// ----- BIBLIOTECA DE ANIMACAO ------
+import { motion } from "framer-motion";
 
 const Endereco = () => {
   const {
@@ -33,6 +36,7 @@ const Endereco = () => {
   } = useForm({
     mode: "onChange",
   });
+  // ESTADOS
   const [erro, setErro] = useState("");
   const [btnLoading_Cep, set_btnLoading_Cep] = useState(false);
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
@@ -41,42 +45,49 @@ const Endereco = () => {
   const [cepAnterior, setCepAnterior] = useState("");
   const cep = watch("cep") || "";
   const navigate = useNavigate();
+  // ADICIONA ETAPA PARA ROTA
   const { setEtapa } = authProtecao_Rotas();
 
+  // VERIFICA SE O CEP ESTA TOTALMENTE PREENCHIDO
   useEffect(() => {
     setAtivo(cep.length === 9);
   }, [cep]);
 
+  // ADICIONA UMA MASCARA PARA VISUALIZAR O CEP
   const mascaraCep = (event) => {
     const value = event.target.value.replace(/\D/g, "");
     const formattedValue = value.replace(/(\d{5})(\d)/, "$1-$2");
     setValue("cep", formattedValue);
   };
 
+  // ATUALIZA O INPUT
+  // DEFINE O ESTADO PARA O FORMULARIO
   const handleSelectChange = (value) => {
-    setEstado(value); // Atualiza o UF selecionado
-    setValue("estado", value); // Define o valor no react-hook-form
+    setEstado(value);
+    setValue("estado", value);
   };
 
+  // BUSCA CEP NA API DO CORREIO
   async function buscarCep(event) {
     event.preventDefault();
+    // VERIFICA SE ESTA PREENCHIDO E SE É DIFERENTE DO ANTERIOR
     if (cep.length === 9 && cep !== cepAnterior) {
+      // LIMPA ERRO
       setErro("");
+
       set_btnLoading_Cep(true);
       // TEMPO LIMITE DE 3 SEGUNDOS
       const timeout = 3000;
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
       );
-
-      // Delay de 1 segundo antes de buscar o CEP
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      // FAZ A BUSCA NA API COM CEP INSERIDO
       try {
         const res = await Promise.race([
           axios.get(`https://viacep.com.br/ws/${cep.replace("-", "")}/json/`),
           timeoutPromise,
         ]);
+        // ATUALIZA OS CAMPOS COM AS INFORMACES
         if (res.data.erro) {
           setErro("CEP não encontrado");
           setCepAnterior(cep);
@@ -92,6 +103,7 @@ const Endereco = () => {
           setValue("bairro", res.data.bairro);
           setValue("rua", res.data.logradouro);
 
+          // LIMPA ERRO
           setErro("");
           setCepAnterior(cep);
         }
@@ -102,24 +114,33 @@ const Endereco = () => {
     }
   }
 
+  // ENVIA INFORMACOES DO FORMULARIO
   const onSubmit = async (data) => {
     set_btnLoading_Submit(true);
+    // DELAY
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    // GUARDA DADOS NO LOCALSTORAGE
     authCadastro.getState().setUserInfo("estado", data.estado);
     authCadastro.getState().setUserInfo("cidade", data.cidade);
     authCadastro.getState().setUserInfo("bairro", data.bairro);
     authCadastro.getState().setUserInfo("rua", data.rua);
-
     authCadastro.getState().setUserInfo("cep", data.cep);
     authCadastro.getState().setUserInfo("numero", data.numero);
-    // CONTEXTO DE PROTECAO DE ROTAS
+    // AVANCA PAGINA
     setEtapa(6);
     navigate("../cadastro-senha");
+
     set_btnLoading_Submit(false);
   };
 
   return (
-    <div className="h-full">
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.3 }}
+      className="h-full"
+    >
       <form className="w-full h-full flex flex-col justify-center items-center gap-6 px-4">
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Seu endereço</Label>
@@ -267,7 +288,7 @@ const Endereco = () => {
           <Button
             variant="primary"
             onClick={handleSubmit(onSubmit)}
-            disabled={!isValid || !estado}
+            disabled={!isValid || !estado || btnLoading_Submit}
             className="relative flex items-center justify-center"
           >
             {btnLoading_Submit ? (
@@ -282,7 +303,7 @@ const Endereco = () => {
           </Button>
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

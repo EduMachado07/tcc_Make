@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { authCadastro } from "@/context/authCadastro";
 import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
@@ -15,29 +15,29 @@ import {
 } from "@/components/ui/select";
 // -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
-
+// -------- COMPONENTE ERRO ---------
 import Erro from "@/components/componentes/erro";
+// ----- BIBLIOTECA DE ANIMACAO (motion) ------
+import { motion } from "framer-motion";
 
 const Cliente = () => {
+  // ESTADOS
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [dia, setDia] = useState("");
   const [mes, setMes] = useState("");
   const [ano, setAno] = useState("");
   const [erro, setErro] = useState("");
-  const navigate = useNavigate();
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
-
+  const navigate = useNavigate();
+  // ADICIONA ETAPA PARA ROTA
   const { setEtapa } = authProtecao_Rotas();
+
   // ------- TELEFONE USUARIO ---------
-  // PARA FORMATAR TELEFONE
+  // FORMATA TELEFONE
   const formatoTelefone = (value) => {
     if (!value) return value;
-
-    // Remove tudo que não for número
     const phoneNumber = value.replace(/[^\d]/g, "");
-
-    // Adiciona o parêntese, espaço e traço no formato correto
     const phoneNumberLength = phoneNumber.length;
 
     if (phoneNumberLength < 3) return phoneNumber;
@@ -59,7 +59,7 @@ const Cliente = () => {
   // BLOQUEIA ENTRADA DE NUMEROS e CARACTERES ESPECIAIS
   const alterarNome = (event) => {
     const value = event.target.value;
-    // Permite apenas letras e espaços
+    // PERMITE APENAS LETRAS E ESPAÇOS
     const formattedValue = value.replace(/[^a-zA-Z\s]/g, "");
     setNome(formattedValue);
   };
@@ -67,23 +67,34 @@ const Cliente = () => {
   const formataData_Contexto = () => {
     return `${dia}-${mes}-${ano}`;
   };
+
+  // VERIFICA SE OS CAMPOS ESTAO PREENCHIDOS
   const isDataNascimentoPreenchida = dia && mes && ano;
 
-  // Gerar os dias (1 a 31)
+  // DATAS PARA OS INPUTS
+  // CRIA OS DIAS (1 a 31)
   const dias = Array.from({ length: 31 }, (_, i) =>
     String(i + 1).padStart(2, "0")
   );
-  // Gerar os anos (1924 até o ano atual)
+  // CRIA OS ANOS (1924 até o ano atual)
   const anoAtual = new Date().getFullYear();
   const anos = Array.from({ length: anoAtual - 1924 + 1 }, (_, i) =>
     String(anoAtual - i)
   );
 
+  // INICIA PAGINA COM INPUT FOCADO
+  const inputNome = useRef(null);
+  useEffect(() => {
+    if (inputNome.current) {
+      inputNome.current.focus();
+    }
+  }, []);
+
   // ------ ENVIA FORMULARIO -------
   async function EnviarFormulario(event) {
     event.preventDefault();
     set_btnLoading_Submit(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     setErro("");
     const anoMinimo = anoAtual - 90;
@@ -100,19 +111,27 @@ const Cliente = () => {
     }
     // CONVERTE DATA PARA GUARDAR NO CONTEXTO
     const dataFormatada = formataData_Contexto();
+
     // GUARDA DADOS NO CONTEXTO
     authCadastro.getState().setUserInfo("nome", nome);
     authCadastro.getState().setUserInfo("tel", telefone);
     authCadastro.getState().setUserInfo("dataNascimento", dataFormatada);
-    // CONTEXTO DE PROTECAO DE ROTAS
-    setEtapa(5);
 
+    // AVANCA PAGINA
+    setEtapa(5);
     navigate("../cadastro-endereco");
+
     set_btnLoading_Submit(false);
   }
 
   return (
-    <div className="h-full">
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.3 }}
+      className="h-full"
+    >
       <form
         className=" w-full h-full flex flex-col justify-center items-center gap-6 px-4"
         onSubmit={EnviarFormulario}
@@ -143,6 +162,7 @@ const Cliente = () => {
               variant="inputIcon"
               type="text"
               value={nome}
+              ref={inputNome}
               placeholder="Nome completo"
               onChange={alterarNome}
               maxLength={100}
@@ -159,7 +179,7 @@ const Cliente = () => {
                   <SelectValue placeholder="dia" />
                 </SelectTrigger>
                 <SelectContent className="max-h-56 overflow-y-auto">
-                  {dias.map((dia) =>( 
+                  {dias.map((dia) => (
                     <SelectItem key={dia} value={dia}>
                       {dia}
                     </SelectItem>
@@ -194,7 +214,7 @@ const Cliente = () => {
                   <SelectValue placeholder="ano" />
                 </SelectTrigger>
                 <SelectContent className="max-h-56 overflow-y-auto">
-                  {anos.map((anos) =>( 
+                  {anos.map((anos) => (
                     <SelectItem key={anos} value={anos}>
                       {anos}
                     </SelectItem>
@@ -237,7 +257,8 @@ const Cliente = () => {
               !nome ||
               !telefone ||
               telefone.length !== 15 ||
-              !isDataNascimentoPreenchida
+              !isDataNascimentoPreenchida ||
+              btnLoading_Submit
             }
           >
             {btnLoading_Submit ? (
@@ -252,7 +273,7 @@ const Cliente = () => {
           </Button>
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

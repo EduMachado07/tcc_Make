@@ -11,15 +11,20 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 // -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
-
+// -------- COMPONENTE DE ERRO ----------
 import Erro from "@/components/componentes/erro";
+// ----- BIBLIOTECA DE ANIMACAO ------
+import { motion } from "framer-motion";
 
 const Email = () => {
+  // ESTADOS DA PAGINA
   const [email, setEmail] = useState("");
   const [erro, setErro] = useState("");
-  const navigate = useNavigate();
-  const { setEtapa } = authProtecao_Rotas();
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
+  const navigate = useNavigate();
+  // ADICIONA ETAPA PARA ROTA
+  const { setEtapa } = authProtecao_Rotas();
+
   // INICIA PAGINA COM INPUT FOCADO
   const inputEmail = useRef(null);
   useEffect(() => {
@@ -28,33 +33,61 @@ const Email = () => {
     }
   }, []);
 
-  function EnviarFormulario(event) {
+  // ENVIA INFORMACOES DO FORMULARIO
+  async function EnviarFormulario(event) {
     event.preventDefault();
+
+    // VERIFICA SE ESTA NO FORMATO EMAIL
+    if (!validator.isEmail(email)) {
+      setErro("insira um email válido");
+      return;
+    }
+    // LIMPA ERROS
+    setErro("");
+    // INICIA LOADING
+    set_btnLoading_Submit(true);
 
     // DEFINE TEMPO LIMITE
     const timeout = 15000;
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
     );
-    
-    if (!validator.isEmail(email)) {
-      setErro("insira um email válido");
-      return;
-    }
-    
-    set_btnLoading_Submit(true)
-    setErro("");
-    setTimeout(() => {
+    try {
+      const res = await Promise.race([
+        axios.get(
+          "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/usuarios"
+        ),
+        timeoutPromise,
+      ]);
+
+      // VERIFICA SE JA EXISTE USUARIO COM O EMAIL INSERIDO
+      const usuarioExistente = res.data.find((user) => user.email === email);
+      if (usuarioExistente) {
+        setErro("Email já possui uma conta");
+        return;
+      }
+      // ADICIONA EMAIL NO LOCAL STORAGE
       authCadastro.getState().setUserInfo("email", email);
+      // AVANCA PAGINA
       setEtapa(2);
       navigate("../validacao");
-      set_btnLoading_Submit(false)
-    }, timeout);
-
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      navigate("../../erro");
+    } finally {
+      // TERMINA LOADING
+      set_btnLoading_Submit(false);
+    }
   }
 
   return (
-    <div className="h-full">
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.3 }}
+      className="h-full"
+    >
       <form
         method="post"
         onSubmit={EnviarFormulario}
@@ -82,6 +115,7 @@ const Email = () => {
               variant="inputIcon"
               type="text"
               value={email}
+              ref={inputEmail}
               placeholder="user@gmail.com"
               onChange={(event) => setEmail(event.target.value)}
             />
@@ -89,8 +123,8 @@ const Email = () => {
         </div>
         {/* BOTAO CADASTRAR */}
         <div className="w-3/4 flex flex-col">
-          <Button variant="primary" disabled={!email}>
-          {btnLoading_Submit ? (
+          <Button variant="primary" disabled={!email || btnLoading_Submit}>
+            {btnLoading_Submit ? (
               <CircularProgress
                 size={20}
                 color="colorPrimary"
@@ -128,7 +162,7 @@ const Email = () => {
           <Button>Login com Facebook</Button>
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

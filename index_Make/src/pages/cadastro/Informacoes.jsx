@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authCadastro } from "@/context/authCadastro";
+import { authLogin } from "@/context/authLogin";
+import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
 import axios from "axios";
 // -------- COMPONENTES UI
 import { Button } from "@/components/ui/button";
@@ -9,10 +11,13 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 // -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
+// ----- BIBLIOTECA DE ANIMACAO ------
+import { motion } from "framer-motion";
 
 const Informacoes = () => {
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
   const navigate = useNavigate();
+  const { resetEtapa, etapa } = authProtecao_Rotas();
   const {
     email,
     nome,
@@ -39,7 +44,7 @@ const Informacoes = () => {
   };
 
   // ----- ENVIA DADOS PARA API ----------
-  const onSubmit = async () => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     set_btnLoading_Submit(true);
 
@@ -79,18 +84,31 @@ const Informacoes = () => {
         ]);
         // GUARDA ID DO CLIENTE PARA TABELA USUARIO
         const idCliente = cliente.data.id;
-        
+
         console.log("cliente cadastrado");
-        
+
         // CRIA USUARIO COM ID CLIENTE
         await Promise.race([
           axios.post(
             "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/usuarios",
-            { email: usuario.email, senha: usuario.senha, tipoUsuario: usuario.user, idCliente: idCliente}
+            {
+              email: usuario.email,
+              senha: usuario.senha,
+              tipoUsuario: usuario.user,
+              idCliente: idCliente,
+            }
           ),
           timeoutPromise,
         ]);
         console.log("usuario cadastrado");
+
+        // Faz login com os dados cadastrados
+        authLogin.getState().login({
+          id: idCliente,
+          email: dataUser.email,
+          nome: dataUser.nome,
+          tipoUser: dataUser.user,
+        });
       }
       // ENVIA DADOS PARA TABELA EMPRESA
       if (user === "empresa") {
@@ -108,29 +126,63 @@ const Informacoes = () => {
         ]);
         // GUARDA ID DA EMPRESA PARA TABELA USUARIO
         const idEmpresa = empresa.data.id;
-        
+
         console.log("EMPRESA cadastrado");
-        
+
         // CRIA USUARIO COM ID CLIENTE
         await Promise.race([
           axios.post(
             "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/usuarios",
-            { email: usuario.email, senha: usuario.senha, tipoUsuario: usuario.user, idCliente: idEmpresa}
+            {
+              email: usuario.email,
+              senha: usuario.senha,
+              tipoUsuario: usuario.user,
+              idCliente: idEmpresa,
+            }
           ),
           timeoutPromise,
         ]);
         console.log("USUARIO cadastrada");
+
+        // Faz login com os dados cadastrados
+        authLogin.getState().login({
+          id: idEmpresa,
+          email: dataUser.email,
+          nome: dataUser.nome,
+          tipoUser: dataUser.user,
+        });
       }
+      navigate("/");
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       navigate("../../erro");
     } finally {
+      authCadastro.getState().removeUserInfo("email");
+      authCadastro.getState().removeUserInfo("senha");
+      authCadastro.getState().removeUserInfo("user");
+      authCadastro.getState().removeUserInfo("nome");
+      authCadastro.getState().removeUserInfo("tel");
+      authCadastro.getState().removeUserInfo("dataNascimento");
+      authCadastro.getState().removeUserInfo("cep");
+      authCadastro.getState().removeUserInfo("numero");
+      authCadastro.getState().removeUserInfo("empresa");
+      authCadastro.getState().removeUserInfo("estado");
+      authCadastro.getState().removeUserInfo("cidade");
+      authCadastro.getState().removeUserInfo("bairro");
+      authCadastro.getState().removeUserInfo("rua");
+
       set_btnLoading_Submit(false);
     }
   };
 
   return (
-    <div className="h-full">
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.3 }}
+      className="h-full"
+    >
       <form className="w-full h-full flex flex-col justify-center items-center gap-6 px-4">
         <section className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Suas informações</Label>
@@ -239,7 +291,7 @@ const Informacoes = () => {
                 />
               </section>
               <div className="w-full flex gap-8">
-                <section className="flex items-center w-1/4 gap-2">
+                <section className="flex items-center min-w-1/4 gap-2">
                   <Label size="base" color="colorText_Bold">
                     Estado:
                   </Label>
@@ -313,7 +365,7 @@ const Informacoes = () => {
           </Button>
         </section>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

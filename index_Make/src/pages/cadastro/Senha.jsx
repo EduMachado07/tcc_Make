@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import validator from "validator";
+// CONTEXTOS
 import { authCadastro } from "@/context/authCadastro";
 import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
 // -------- COMPONENTES UI
@@ -9,7 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+// -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
+// ----- BIBLIOTECA DE ANIMACAO ------
+import { motion } from "framer-motion";
 
 const Senha = () => {
   const { register, handleSubmit, watch } = useForm();
@@ -59,7 +63,13 @@ const Senha = () => {
   };
 
   return (
-    <div className="h-full">
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.3 }}
+      className="h-full"
+    >
       <form className="w-full h-full flex flex-col justify-center items-center gap-6 px-4">
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="subtitle">Cadastre sua senha</Label>
@@ -113,7 +123,8 @@ const Senha = () => {
               !rules.minLength ||
               !rules.hasUpperCase ||
               !rules.hasSymbol ||
-              !rules.hasNumber
+              !rules.hasNumber ||
+              btnLoading_Submit
             }
             onClick={handleSubmit(onSubmit)}
           >
@@ -129,7 +140,7 @@ const Senha = () => {
           </Button>
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

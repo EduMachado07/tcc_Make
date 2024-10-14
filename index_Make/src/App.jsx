@@ -1,6 +1,7 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { authLogin } from "./context/authLogin";
 import { authCadastro } from "./context/authCadastro";
+import { authProtecao_Rotas } from "./context/authProtecao_rotas";
 // -------- COMPONENTES UI (shadcn)------------
 import { Button } from "@/components/ui/button";
 import {
@@ -14,11 +15,16 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function Navbar() {
+  const { resetEtapa } = authProtecao_Rotas();
   const { autenticacao, logout, user } = authLogin();
   const navigate = useNavigate();
 
   function Deslogar() {
     logout(navigate);
+  }
+  function Cadastro(){
+    resetEtapa();
+    navigate('/cadastro');
   }
   return (
     <div className="w-full h-16 inline-flex justify-between items-center px-10">
@@ -40,7 +46,7 @@ function Navbar() {
         </Link>
         <Link
           className="mr-5 font-medium text-lg hover:text-sky-600"
-          to="/cadastro"
+          onClick={Cadastro}
         >
           Cadastro
         </Link>
@@ -57,7 +63,7 @@ function Navbar() {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{user.nome}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Billing</DropdownMenuItem>
@@ -76,53 +82,9 @@ function Navbar() {
 }
 
 function App() {
-  const {
-    email,
-    nome,
-    tel,
-    data,
-    cep,
-    numero,
-    senha,
-    estado,
-    cidade,
-    bairro,
-    rua,
-    removeUserInfo
-  } = authCadastro();
-
-  function clearAllUserInfo() {
-    removeUserInfo("email");
-    removeUserInfo("nome");
-    removeUserInfo("tel");
-    removeUserInfo("data");
-    removeUserInfo("cep");
-    removeUserInfo("numero");
-    removeUserInfo("senha");
-    removeUserInfo("estado");
-    removeUserInfo("cidade");
-    removeUserInfo("bairro");
-    removeUserInfo("rua");
-    removeUserInfo("empresa");
-  }
-
   return (
     <div className="w-full h-screen">
       <Navbar />
-      <div>
-        <p>Email: {email || "N/A"}</p>
-        <p>Nome: {nome || "N/A"}</p>
-        <p>Telefone: {tel || "N/A"}</p>
-        <p>Data de Nascimento: {data || "N/A"}</p>
-        <p>Cep: {cep || "N/A"}</p>
-        <p>Numero: {numero || "N/A"}</p>
-        <p>senha: {senha || "N/A"}</p>
-        <p>estado: {estado || "N/A"}</p>
-        <p>cidade: {cidade || "N/A"}</p>
-        <p>bairro: {bairro || "N/A"}</p>
-        <p>rua: {rua || "N/A"}</p>
-        <Button onClick={clearAllUserInfo}>Remover</Button>
-      </div>
       <Outlet />
     </div>
   );

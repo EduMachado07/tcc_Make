@@ -7,6 +7,8 @@ import {
   Navigate,
 } from "react-router-dom";
 
+import { AnimatePresence } from "framer-motion";
+
 // ------- paginas da aplicacao --------
 import App from "./App.jsx";
 import Login from "./pages/login.jsx";
@@ -19,7 +21,7 @@ import Cliente from "./pages/cadastro/cliente.jsx";
 import Empresa from "./pages/cadastro/empresa.jsx";
 import Endereco from "./pages/cadastro/endereco";
 import Senha from "./pages/cadastro/Senha";
-import Informacoes from "./pages/cadastro/informacoes"
+import Informacoes from "./pages/cadastro/informacoes";
 import Erro from "./pages/erro";
 
 // --------- PROTECAO PARA CADASTRO ------------
@@ -29,20 +31,17 @@ import { authProtecao_Rotas } from "./context/authProtecao_rotas.ts";
 const ProtecaoRotas = ({ pagina, etapa }) => {
   const etapaAtual = authProtecao_Rotas((state) => state.etapa);
 
-  // console.log(`Etapa atual: ${etapaAtual}, Etapa requerida: ${etapa}`);
-
   if (etapaAtual > 1 && etapa < 2) {
-    return <Navigate to="/cadastro/validacao" replace />
-  }
-  else if (etapaAtual > 2 && etapa == 2) {
-    return <Navigate to="/cadastro/tipo-usuario" replace />
+    return <Navigate to="/cadastro/validacao" replace />;
+  } else if (etapaAtual > 2 && etapa === 2) {
+    return <Navigate to="/cadastro/tipo-usuario" replace />;
   }
 
   if (etapaAtual >= etapa) {
     return pagina;
   }
 
-  return <Navigate to="/cadastro/email" replace />
+  return <Navigate to="/cadastro/email" replace />;
 };
 
 // --------- COMPONENTE PARA ROTAS DA APLICACAO ------------
@@ -109,7 +108,13 @@ const Rotas = () => {
       element: <Erro />,
     },
   ]);
-  return <RouterProvider router={routes} />;
+  return (
+    <AnimatePresence mode="wait">
+      <RouterProvider
+        router={routes}
+      />
+    </AnimatePresence>
+  );
 };
 
 createRoot(document.getElementById("root")).render(

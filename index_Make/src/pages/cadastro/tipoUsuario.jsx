@@ -4,31 +4,43 @@ import { authProtecao_Rotas } from "../../context/authProtecao_rotas";
 import { authCadastro } from "../../context/authCadastro";
 // -------- COMPONENTES UI (shadcn)------------
 import { Button } from "@/components/ui/button";
+// ----- BIBLIOTECA DE ANIMACAO (motion) ------
+import { motion } from "framer-motion";
 
 const Tipo_Usuario = () => {
   const [user, setUser] = useState("");
   const navigate = useNavigate();
-  const stateEtapa = authProtecao_Rotas((state) => state.setEtapa);
+  // ADICIONA ETAPA PARA ROTA
+  const { setEtapa } = authProtecao_Rotas();
 
+  // GUARDA O TIPO DO USUARIO ESCOLHIDO
   function tipoUsario(tipo) {
     setUser(tipo);
   }
+
+  // ENVIA PARA PAGINA DO USUARIO ESCOLHIDO
   function EnviarUsuario() {
-    stateEtapa(4);
+    setEtapa(4);
+    // VERIFICA QUAL O USUARIO E REDIRECIONA PARA A PAGINA
     if (user === "cliente") {
+      // GUARDA O TIPO DO USUARIO NO LOCAL STORAGE
       authCadastro.getState().setUserInfo("user", user);
       navigate("../cadastro-cliente");
     } else if (user === "empresa") {
+      // GUARDA O TIPO DO USUARIO NO LOCAL STORAGE
       authCadastro.getState().setUserInfo("user", user);
-      // console.log(`tipo: ${user}`)
       navigate("../cadastro-empresa");
-    } else {
-      setErro("selecione um tipo de usuário.");
     }
   }
 
   return (
-    <div className="h-full 600 flex justify-center items-center">
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.3 }}
+      className="h-full 600 flex justify-center items-center"
+    >
       <section className="w-3/4 flex flex-col gap-6 px-4">
         {/* CARD CLIENTE */}
         <h1 className="text-3xl text-colorPrimary font-semibold">
@@ -102,7 +114,7 @@ const Tipo_Usuario = () => {
           Continuar
         </Button>
       </section>
-    </div>
+    </motion.div>
   );
 };
 

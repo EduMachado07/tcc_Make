@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Cadastro = () => {
   return (
@@ -20,13 +21,14 @@ const Cadastro = () => {
           </h1>
           <p className="text-left text-slate-100">
             Preencha todos os campos com as suas informações, e desfrute do
-            melhor sistema de gerenciamento de serviços para pequenas e grandes empresas.
+            melhor sistema de gerenciamento de serviços para pequenas e grandes
+            empresas.
           </p>
         </div>
       </section>
 
       {/* PAGINAS PARA CADASTRO */}
-      <section className="w-2/4 h-full">
+      <section className="w-2/4 h-full overflow-hidden">
         <Outlet />
       </section>
     </main>

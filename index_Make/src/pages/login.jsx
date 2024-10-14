@@ -8,15 +8,22 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-
+// -------- ( MATERIAL UI )------------
+import CircularProgress from "@mui/material/CircularProgress";
+// -------- COMPONENTE DE ERRO ---------
 import Erro from "@/components/componentes/erro";
+// ----- BIBLIOTECA DE ANIMACAO ------
+import { motion } from "framer-motion";
 
 const Login = () => {
+  // ESTADOS
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
+  const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
   const navigate = useNavigate();
-
+  // FUNCAO CONTEXTO AUTHLOGIN
+  // ADICIONA ETAPA
   const stateLogin = authLogin((state) => state.login);
 
   // INICIA PAGINA COM INPUT FOCADO
@@ -30,25 +37,32 @@ const Login = () => {
   async function EnviarFormulario(event) {
     event.preventDefault();
 
+    // VERIFICA SE ESTA NO FORMATO EMAIL
     if (!validator.isEmail(email)) {
       setErro("insira um email válido");
       return;
     }
 
+    // LIMPA ERROS
     setErro("");
-  
+    // INICIA LOADING
+    set_btnLoading_Submit(true);
+
+    // DEFINE LIMITE DA REQUISICAO
     const timeout = 15000;
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
     );
-  
+
     try {
+      // BUSCA NA API O EMAIL E SENHA INSERIDOS
       const res = await Promise.race([
         axios.post("http://localhost:3000/api/login", { email, senha }),
         timeoutPromise,
       ]);
       const user = res.data.user;
-  
+
+      // VERIFICA SE USUARIO EXISTE
       if (user) {
         stateLogin(user);
         navigate("/negocios");
@@ -56,18 +70,22 @@ const Login = () => {
         setErro("Usuário não encontrado");
       }
     } catch (error) {
-      if (error.response) {
-        setErro(`Erro na resposta: ${error.response.data.error}`);
-      } else if (error.request) {
-        setErro("Nenhuma resposta recebida do servidor.");
-      } else {
-        setErro(`Erro na solicitação: ${error.message}`);
-      }
+      // if (error.response) {
+      //   navigate("/erro");
+      // } else if (error.request) {
+      //   setErro("Nenhuma resposta recebida do servidor.");
+      // } else {
+      //   setErro(`Erro na solicitação: ${error.message}`);
+      // }
+      navigate("/erro");
+    } finally {
+      // TERMINA LOADING
+      set_btnLoading_Submit(false);
     }
   }
 
   return (
-    <div className="w-full h-screen bg-colorBack flex justify-center items-center p-3">
+    <div className="w-full h-screen bg-colorBack flex justify-center items-center p-3 overflow-hidden">
       {/* IDENTIFICACAO DA PAGINA */}
       <div className="bg-colorPrimary w-2/4 h-full rounded-l-md relative flex justify-center items-center">
         <Link
@@ -89,7 +107,11 @@ const Login = () => {
       </div>
 
       {/* FORMULARIO LOGIN */}
-      <form
+      <motion.form
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -100 }}
+        transition={{ duration: 0.3 }}
         method="post"
         onSubmit={EnviarFormulario}
         className="w-2/4 px-4 h-full relative flex flex-col justify-center items-center gap-4"
@@ -98,7 +120,7 @@ const Login = () => {
           <Label size="subtitle">Login</Label>
           {/* MENSAGEM DE ERRO PARA EMAIL E SENHA */}
           {/* COMPONENTE MENSAGEM DE ERRO */}
-          <Erro props={ erro }/>
+          <Erro props={erro} />
           {/* CAMPO EMAIL */}
           <>
             <Label size="medium">Email</Label>
@@ -165,8 +187,19 @@ const Login = () => {
           </>
         </div>
         <div className="w-3/4 flex flex-col">
-          <Button variant="primary" disabled={!email || !senha}>
-            Entrar
+          <Button
+            variant="primary"
+            disabled={!email || !senha || btnLoading_Submit}
+          >
+            {btnLoading_Submit ? (
+              <CircularProgress
+                size={20}
+                color="colorPrimary"
+                className="relative inset-0 mt-1"
+              />
+            ) : (
+              "Entrar"
+            )}
           </Button>
           <div className="w-full text-center">
             <p className="text-sm">
@@ -192,7 +225,7 @@ const Login = () => {
           <Button>Login com Google</Button>
           <Button>Login com Facebook</Button>
         </div>
-      </form>
+      </motion.form>
     </div>
   );
 };

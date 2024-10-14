@@ -64,7 +64,6 @@ export const authCadastro = create<AuthStore>((set) => {
     bairro,
     rua,
 
-    // Função única para atualizar qualquer campo e armazenar no localStorage
     setUserInfo: (field, value) => {
       localStorage.setItem(field, JSON.stringify(value)); 
       set({ [field]: value });

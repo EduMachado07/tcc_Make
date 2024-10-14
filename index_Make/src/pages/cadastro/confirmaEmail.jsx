@@ -12,44 +12,58 @@ import {
 } from "@/components/ui/input-otp";
 // -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
-
+// ------ COMPONENTE PARA ERRO ------
 import Erro from "@/components/componentes/erro";
+// ----- BIBLIOTECA DE ANIMACAO (motion) ------
+import { motion } from "framer-motion";
 
 const Confirma_Email = () => {
+  // ESTADOS DA PAGINA
   const { email } = authCadastro();
   const [codigo, setCodigo] = useState("");
   const [erro, setErro] = useState("");
   const navigate = useNavigate();
-  const stateEtapa = authProtecao_Rotas((state) => state.setEtapa);
+  //
+  const { setEtapa } = authProtecao_Rotas();
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
 
   // INICIA PAGINA COM INPUT FOCADO
-  const inputEmail = useRef(null);
+  const inputCodigo = useRef(null);
   useEffect(() => {
-    if (inputEmail.current) {
-      inputEmail.current.focus();
+    if (inputCodigo.current) {
+      inputCodigo.current.focus();
     }
   }, []);
 
-  const EnviarFormulario = async(event) => {
+  const EnviarFormulario = async (event) => {
     event.preventDefault();
-    const timeout = 2000;
+
     set_btnLoading_Submit(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // -----------
+    // ADICIONAR API PARA VERIFICAR O CODIGO DO EMAIL
+    // -----------
+
     setErro("");
+    // VERIFICA SE O CODIGO INSERIDO É IGUAL AO DO EMAIL
     if (codigo == 12345) {
-      setTimeout(() => {
-        navigate("../tipo-usuario");
-      }, timeout);
-      stateEtapa(3);
+      // AVANCA PAGINA
+      setEtapa(3);
+      navigate("../tipo-usuario");
     } else {
       setErro("Código inválido. Verifique o seu email e tente novamente");
     }
     set_btnLoading_Submit(false);
-  }
+  };
 
   return (
-    <div className="h-full">
+    <motion.div
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.3 }}
+      className="h-full"
+    >
       <form
         method="post"
         onSubmit={EnviarFormulario}
@@ -68,7 +82,7 @@ const Confirma_Email = () => {
           <div className="flex justify-center">
             <InputOTP
               maxLength={5}
-              ref={inputEmail}
+              ref={inputCodigo}
               value={codigo}
               onChange={(codigo) => setCodigo(codigo)}
             >
@@ -85,8 +99,11 @@ const Confirma_Email = () => {
         {/* COMPONENTE MENSAGEM DE ERRO */}
         <Erro props={erro} />
         <div className="w-3/4 flex flex-col">
-          <Button disabled={codigo.length !== 5} variant="primary">
-          {btnLoading_Submit ? (
+          <Button
+            disabled={codigo.length !== 5 || btnLoading_Submit}
+            variant="primary"
+          >
+            {btnLoading_Submit ? (
               <CircularProgress
                 size={20}
                 color="colorPrimary"
@@ -98,7 +115,7 @@ const Confirma_Email = () => {
           </Button>
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 
