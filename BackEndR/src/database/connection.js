@@ -1,21 +1,18 @@
-require('dotenv').config();
+const mysql = require('mysql2');
 
-
-const mysql = require('mysql');
-
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'SGME_HUBFLOW'
 });
 
-connection.connect((err) => {
+db.connect((err) => {
     if (err) {
-        console.error('Erro ao conectar ao banco de dados: ' + err.stack);
-        return;
+        console.error('Erro ao conectar ao banco de dados:', err);
+        process.exit(1);
     }
-    console.log('Conectado ao banco de dados como ID ' + connection.threadId);
+    console.log('Conectado ao banco de dados MySQL');
 });
 
-module.exports = connection;
+module.exports = db;

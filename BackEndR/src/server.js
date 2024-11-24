@@ -1,55 +1,29 @@
 const express = require('express');
-const mysql = require('mysql2');
-const bodyParser = require('body-parser');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const loginRouter = require('./routes/login'); // Ajuste para o caminho correto
+const cadastroRouter = require('./routes/cadastro'); // Ajuste para o caminho correto
+const authRouter = require('./routes/authRoutes'); // Ajuste para o caminho correto
 
 const app = express();
-const PORT = 3000;
+const PORT = 3000; // Ou a nova porta que você configurou
 
 // Middleware
-app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
-// Configurando a conexão com o banco de dados
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root', // substitua pelo seu usuário do MySQL
-  password: '', // substitua pela sua senha do MySQL
-  database: 'SGME_HUBFLOW',
+// Rotas
+app.use('/api/login', loginRouter);
+app.use('/api/cadastro', cadastroRouter);
+app.use('/api/auth', authRouter);
+
+// Rota de teste
+app.get('/api/test', (req, res) => {
+    res.send('API está funcionando!');
 });
 
-// Conexão com o banco de dados
-db.connect((err) => {
-  if (err) throw err;
-  console.log('Conectado ao banco de dados MySQL!');
-});
-
-// Rota de login
-app.post('/api/login', (req, res) => {
-  const { email, senha } = req.body;
-
-  // Consulta SQL para verificar se o usuário existe
-  const sql = 'SELECT * FROM Usuarios WHERE Email = ?';
-  db.query(sql, [email], (err, results) => {
-    if (err) return res.status(500).send(err);
-
-    // Verifica se o usuário foi encontrado
-    if (results.length > 0) {
-      const user = results[0];
-
-      // Aqui você deve comparar a senha armazenada (normalmente, você deve usar bcrypt para hashing)
-      if (user.Senha === senha) {
-        return res.json({ user: { UsuarioID: user.UsuarioID, Email: user.Email, TipoUsuario: user.TipoUsuario } });
-      } else {
-        return res.status(401).json({ message: 'Senha incorreta' });
-      }
-    } else {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
-    }
-  });
-});
-
-// Inicia o servidor
+// Iniciar o servidor
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
