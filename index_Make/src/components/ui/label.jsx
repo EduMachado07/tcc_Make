@@ -11,10 +11,11 @@ const labelVariants = cva(
       size: {
         small: "text-xs",
         medium: "text-sm",
-        base: "text-base",
+        base: "max-sm:text-base text-lg",
         large: "text-lg",
+        subtitle: "max-sm:text-2xl text-4xl mb-2",
         title: "text-3xl",
-        subtitle: "text-2xl mb-2",
+        largeTitle: "text-5xl max-sm:text-4xl font-bold",
       },
       color: {
         default: "text-colorPrimary",

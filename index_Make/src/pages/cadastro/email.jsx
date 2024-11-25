@@ -94,6 +94,23 @@ const Email = () => {
         className=" w-full h-full flex flex-col justify-center items-center gap-6 px-4"
       >
         <div className="flex flex-col w-3/4 gap-3">
+          <Link to="/" className="sm:hidden mb-2 flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18"
+              />
+            </svg>
+            <Label size="large">Voltar</Label>
+          </Link>
           <Label size="subtitle">Cadastro</Label>
           {/* COMPONENTE MENSAGEM DE ERRO */}
           <Erro props={erro} />

@@ -12,17 +12,18 @@ import { AnimatePresence } from "framer-motion";
 // ------- paginas da aplicacao --------
 import App from "./App.jsx";
 import Login from "./pages/login.jsx";
-import Negocios from "./pages/negocios.jsx";
 import Cadastro from "./pages/cadastro/cadastro.jsx";
 import Email from "./pages/cadastro/email.jsx";
 import Confirma_Email from "./pages/cadastro/confirmaEmail.jsx";
 import Tipo_Usuario from "./pages/cadastro/tipoUsuario.jsx";
 import Cliente from "./pages/cadastro/cliente.jsx";
-import Empresa from "./pages/cadastro/empresa.jsx";
+import Empresas from "./pages/negocios.jsx";
+import Empresa from "./pages/cadastro/empresa";
 import Endereco from "./pages/cadastro/endereco";
 import Senha from "./pages/cadastro/Senha";
 import Informacoes from "./pages/cadastro/informacoes";
 import Erro from "./pages/erro";
+import Landing from "./pages/landing";
 
 // --------- PROTECAO PARA CADASTRO ------------
 // COMPONENTE REDIRECIONA PARA PAGINA INICIAL
@@ -52,8 +53,12 @@ const Rotas = () => {
       element: <App />,
       children: [
         {
-          path: "/negocios",
-          element: <Negocios />,
+          path: "/",
+          element: <Landing />,
+        },
+        {
+          path: "/empresas",
+          element: <Empresas />,
         },
       ],
     },
@@ -110,9 +115,7 @@ const Rotas = () => {
   ]);
   return (
     <AnimatePresence mode="wait">
-      <RouterProvider
-        router={routes}
-      />
+      <RouterProvider router={routes} />
     </AnimatePresence>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { authCadastro } from "@/context/authCadastro";
 import { authLogin } from "@/context/authLogin";
 import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
@@ -13,11 +13,16 @@ import { Input } from "@/components/ui/input";
 import CircularProgress from "@mui/material/CircularProgress";
 // ----- BIBLIOTECA DE ANIMACAO ------
 import { motion } from "framer-motion";
+import { cardClasses } from "@mui/material";
 
 const Informacoes = () => {
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
   const navigate = useNavigate();
-  const { resetEtapa, etapa } = authProtecao_Rotas();
+  const { resetEtapa } = authProtecao_Rotas();
+  function Cadastro() {
+    resetEtapa();
+    navigate("/cadastro");
+  }
   const {
     email,
     nome,
@@ -185,6 +190,26 @@ const Informacoes = () => {
     >
       <form className="w-full h-full flex flex-col justify-center items-center gap-6 px-4">
         <section className="flex flex-col w-3/4 gap-3">
+          <button
+            onClick={Cadastro}
+            className="sm:hidden mb-2 flex items-center gap-1"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18"
+              />
+            </svg>
+            <Label size="large">Voltar</Label>
+          </button>
           <Label size="subtitle">Suas informações</Label>
           <section className="flex flex-col gap-1 rounded-sm p-2.5">
             <div className="flex flex-wrap gap-x-8 gap-y-2.5">
