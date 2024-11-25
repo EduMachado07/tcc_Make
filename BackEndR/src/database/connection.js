@@ -1,10 +1,13 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'SGME_HUBFLOW'
+    database: 'SGME_HUBFLOW',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 db.connect((err) => {

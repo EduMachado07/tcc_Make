@@ -4,13 +4,8 @@ const db = require('../database/connection'); // Ajuste para o caminho correto
 
 const router = express.Router();
 
-// Rota de teste
-router.get('/', (req, res) => {
-    res.send('Login foi!');
-});
-
 // Rota de login
-router.get('/login', async (req, res) => { // Alterado de GET para POST
+router.get('/api/login', async (req, res) => { // Alterado de GET para POST
     const { email, senha } = req.body;
     console.log("teste")
 

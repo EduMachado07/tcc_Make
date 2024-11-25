@@ -3,30 +3,22 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { authLogin } from "../context/authLogin";
 import validator from "validator";
-// -------- COMPONENTES UI (shadcn)------------
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-// -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
-// -------- COMPONENTE DE ERRO ---------
 import Erro from "@/components/componentes/erro";
-// ----- BIBLIOTECA DE ANIMACAO ------
 import { motion } from "framer-motion";
 
 const Login = () => {
-  // ESTADOS
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
   const navigate = useNavigate();
-  // FUNCAO CONTEXTO AUTHLOGIN
-  // ADICIONA ETAPA
   const stateLogin = authLogin((state) => state.login);
 
-  // INICIA PAGINA COM INPUT FOCADO
   const inputEmail = useRef(null);
   useEffect(() => {
     if (inputEmail.current) {
@@ -37,49 +29,47 @@ const Login = () => {
   async function EnviarFormulario(event) {
     event.preventDefault();
 
-    // VERIFICA SE ESTA NO FORMATO EMAIL
     if (!validator.isEmail(email)) {
       setErro("insira um email válido");
       return;
     }
 
-    // LIMPA ERROS
     setErro("");
-    // INICIA LOADING
     set_btnLoading_Submit(true);
 
-    // DEFINE LIMITE DA REQUISICAO
     const timeout = 15000;
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
     );
 
     try {
-      // BUSCA NA API O EMAIL E SENHA INSERIDOS
-      const res = await Promise.race([
-        axios.post("http://localhost:3000/api/login", { email, senha }),
+      const response = await Promise.race([
+        axios.get("http://localhost:3001/api/login", { email, senha }),
         timeoutPromise,
       ]);
-      const user = res.data.user;
 
-      // VERIFICA SE USUARIO EXISTE
-      if (user) {
-        stateLogin(user);
+      // Verifica se a resposta é válida e contém os dados do usuário
+      if (response?.data) {
+        // Atualiza o estado de login com os dados do usuário
+        stateLogin(response.data);
         navigate("/negocios");
       } else {
-        setErro("Usuário não encontrado");
+        setErro("Resposta inválida do servidor");
       }
     } catch (error) {
-      // if (error.response) {
-      //   navigate("/erro");
-      // } else if (error.request) {
-      //   setErro("Nenhuma resposta recebida do servidor.");
-      // } else {
-      //   setErro(`Erro na solicitação: ${error.message}`);
-      // }
-      navigate("/erro");
+      if (error.response) {
+        // Erro com resposta do servidor
+        if (error.response.status === 401) {
+          setErro("Email ou senha inválidos");
+        } else {
+          setErro(`Erro do servidor: ${error.response.data.message || 'Erro desconhecido'}`);
+        }
+      } else if (error.message === "Tempo limite excedido") {
+        setErro("O servidor demorou muito para responder. Tente novamente.");
+      } else {
+        setErro("Erro ao conectar com o servidor. Verifique sua conexão.");
+      }
     } finally {
-      // TERMINA LOADING
       set_btnLoading_Submit(false);
     }
   }

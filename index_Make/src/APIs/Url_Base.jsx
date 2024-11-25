@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const urlBase = axios.create({
-  baseURL: 'https://localhost:3000/api',
+  baseURL: 'https://localhost:3001/api/',
 });
 
 export default urlBase;
