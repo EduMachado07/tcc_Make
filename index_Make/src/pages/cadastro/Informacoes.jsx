@@ -2,27 +2,21 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authCadastro } from "@/context/authCadastro";
 import { authLogin } from "@/context/authLogin";
-import { authProtecao_Rotas } from "@/context/authProtecao_rotas";
 import axios from "axios";
+
 // -------- COMPONENTES UI
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-// -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
-// ----- BIBLIOTECA DE ANIMACAO ------
 import { motion } from "framer-motion";
-import { cardClasses } from "@mui/material";
 
 const Informacoes = () => {
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
+  const [isSenha, set_isSenha] = useState(true);
   const navigate = useNavigate();
-  const { resetEtapa } = authProtecao_Rotas();
-  function Cadastro() {
-    resetEtapa();
-    navigate("/cadastro");
-  }
+  const { resetEtapa, etapa } = authProtecao_Rotas();
   const {
     email,
     nome,
@@ -41,141 +35,103 @@ const Informacoes = () => {
     dataNascimento,
   } = authCadastro();
 
-  // --- FUNCAO PARA ICONE DA SENHA ---
-  // MOSTRA SENHA
-  const [isSenha, set_isSenha] = useState(true);
-  const mostrarSenha = () => {
-    set_isSenha((prev) => !prev);
+  // Mostrar/Ocultar senha
+  const mostrarSenha = () => set_isSenha((prev) => !prev);
+
+  // Função para limpar os dados do cadastro
+  const limparDadosCadastro = () => {
+    const campos = [
+      "email",
+      "senha",
+      "user",
+      "nome",
+      "tel",
+      "dataNascimento",
+      "cep",
+      "numero",
+      "empresa",
+      "estado",
+      "cidade",
+      "bairro",
+      "rua",
+    ];
+
+    campos.forEach((campo) => {
+      authCadastro.getState().removeUserInfo(campo);
+    });
   };
 
-  // ----- ENVIA DADOS PARA API ----------
+  // Função de envio do formulário
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
   const onSubmit = async (event) => {
     event.preventDefault();
     set_btnLoading_Submit(true);
 
-    // CRIA OBJETO USUARIO
-    const usuario = { email, senha, user };
-    const dataUser = {
-      nome,
-      tel,
-      estado,
-      cidade,
-      bairro,
-      rua,
-      numero,
-      empresa,
-      dataNascimento,
-    };
-
     try {
-      const timeout = 15000;
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
+      console.log("Enviando dados:", {
+        email,
+        senha,
+        nome,
+        tel,
+        estado,
+        cidade,
+        bairro,
+        rua,
+        numero,
+        empresa,
+        dataNascimento,
+        user,
+      });
+
+      const response = await axios.post(
+        "http://localhost:3001/api/cadastro",
+        {
+          email,
+          senha,
+          nome,
+          tel,
+          estado,
+          cidade,
+          bairro,
+          rua,
+          numero,
+          empresa,
+          dataNascimento,
+          user,
+        },
+        {
+          timeout: 15000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
-      // ENVIA DADOS PARA TABELA CLIENTE
-      if (user === "cliente") {
-        const cliente = await Promise.race([
-          axios.post(
-            "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/Clientes",
-            {
-              nome: dataUser.nome,
-              endereco: `${dataUser.rua}, ${dataUser.numero}, ${dataUser.bairro} - ${dataUser.cidade} (${dataUser.estado})`,
-              telefone: dataUser.tel,
-              dataNascimento: dataUser.dataNascimento,
-            }
-          ),
-          timeoutPromise,
-        ]);
-        // GUARDA ID DO CLIENTE PARA TABELA USUARIO
-        const idCliente = cliente.data.id;
+      console.log("Resposta do servidor:", response.data);
 
-        console.log("cliente cadastrado");
+      authLogin.getState().login({
+        id:
+          user === "cliente"
+            ? response.data.clienteId
+            : response.data.empresaId,
+        email,
+        nome,
+        tipoUser: user,
+      });
 
-        // CRIA USUARIO COM ID CLIENTE
-        await Promise.race([
-          axios.post(
-            "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/usuarios",
-            {
-              email: usuario.email,
-              senha: usuario.senha,
-              tipoUsuario: usuario.user,
-              idCliente: idCliente,
-            }
-          ),
-          timeoutPromise,
-        ]);
-        console.log("usuario cadastrado");
-
-        // Faz login com os dados cadastrados
-        authLogin.getState().login({
-          id: idCliente,
-          email: dataUser.email,
-          nome: dataUser.nome,
-          tipoUser: dataUser.user,
-        });
-      }
-      // ENVIA DADOS PARA TABELA EMPRESA
-      if (user === "empresa") {
-        const empresa = await Promise.race([
-          axios.post(
-            "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/Clientes",
-            {
-              nome: dataUser.nome,
-              empresa: dataUser.empresa,
-              endereco: `${dataUser.rua}, ${dataUser.numero}, ${dataUser.bairro} - ${dataUser.cidade} (${dataUser.estado})`,
-              telefone: dataUser.tel,
-            }
-          ),
-          timeoutPromise,
-        ]);
-        // GUARDA ID DA EMPRESA PARA TABELA USUARIO
-        const idEmpresa = empresa.data.id;
-
-        console.log("EMPRESA cadastrado");
-
-        // CRIA USUARIO COM ID CLIENTE
-        await Promise.race([
-          axios.post(
-            "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/usuarios",
-            {
-              email: usuario.email,
-              senha: usuario.senha,
-              tipoUsuario: usuario.user,
-              idCliente: idEmpresa,
-            }
-          ),
-          timeoutPromise,
-        ]);
-        console.log("USUARIO cadastrada");
-
-        // Faz login com os dados cadastrados
-        authLogin.getState().login({
-          id: idEmpresa,
-          email: dataUser.email,
-          nome: dataUser.nome,
-          tipoUser: dataUser.user,
-        });
-      }
       navigate("/");
-    } catch (error) {
-      console.error("Erro ao criar usuário:", error);
+    } catch (err) {
+      console.error("Erro ao criar usuário:", err);
+      if (err.response) {
+        console.error("Erro do servidor:", err.response.data);
+        // Aqui você pode mostrar uma mensagem mais específica para o usuário
+        alert(err.response.data.message || "Erro ao cadastrar usuário");
+      }
       navigate("../../erro");
     } finally {
-      authCadastro.getState().removeUserInfo("email");
-      authCadastro.getState().removeUserInfo("senha");
-      authCadastro.getState().removeUserInfo("user");
-      authCadastro.getState().removeUserInfo("nome");
-      authCadastro.getState().removeUserInfo("tel");
-      authCadastro.getState().removeUserInfo("dataNascimento");
-      authCadastro.getState().removeUserInfo("cep");
-      authCadastro.getState().removeUserInfo("numero");
-      authCadastro.getState().removeUserInfo("empresa");
-      authCadastro.getState().removeUserInfo("estado");
-      authCadastro.getState().removeUserInfo("cidade");
-      authCadastro.getState().removeUserInfo("bairro");
-      authCadastro.getState().removeUserInfo("rua");
-
+      limparDadosCadastro();
       set_btnLoading_Submit(false);
     }
   };
@@ -190,26 +146,6 @@ const Informacoes = () => {
     >
       <form className="w-full h-full flex flex-col justify-center items-center gap-6 px-4">
         <section className="flex flex-col w-3/4 gap-3">
-          <button
-            onClick={Cadastro}
-            className="sm:hidden mb-2 flex items-center gap-1"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18"
-              />
-            </svg>
-            <Label size="large">Voltar</Label>
-          </button>
           <Label size="subtitle">Suas informações</Label>
           <section className="flex flex-col gap-1 rounded-sm p-2.5">
             <div className="flex flex-wrap gap-x-8 gap-y-2.5">
@@ -299,12 +235,16 @@ const Informacoes = () => {
                 </div>
               </section>
             </div>
-            {/* INFORMAOES DE ENDERECO */}
+
+            {/* Separador de Endereço */}
             <div className="w-32 my-2">
               <Label size="large">Endereço</Label>
               <Separator />
             </div>
+
+            {/* Informações de Endereço */}
             <div className="flex flex-wrap gap-x-8 gap-y-2.5">
+              {/* CEP */}
               <section className="flex items-center w-2/4 gap-2">
                 <Label size="base" color="colorText_Bold">
                   CEP:
@@ -315,6 +255,8 @@ const Informacoes = () => {
                   readOnly
                 />
               </section>
+
+              {/* Estado e Cidade */}
               <div className="w-full flex gap-8">
                 <section className="flex items-center min-w-1/4 gap-2">
                   <Label size="base" color="colorText_Bold">
@@ -337,6 +279,8 @@ const Informacoes = () => {
                   />
                 </section>
               </div>
+
+              {/* Bairro */}
               <section className="flex items-center w-full gap-2">
                 <Label size="base" color="colorText_Bold">
                   Bairro:
@@ -347,6 +291,8 @@ const Informacoes = () => {
                   readOnly
                 />
               </section>
+
+              {/* Rua e Número */}
               <div className="w-full flex gap-2">
                 <section className="flex items-center w-3/4 gap-2">
                   <Label size="base" color="colorText_Bold">
@@ -360,7 +306,7 @@ const Informacoes = () => {
                 </section>
                 <section className="flex items-center w-2/4 gap-2">
                   <Label size="base" color="colorText_Bold">
-                    Numero:
+                    Número:
                   </Label>
                   <Input
                     className="flex-grow"
@@ -371,6 +317,8 @@ const Informacoes = () => {
               </div>
             </div>
           </section>
+
+          {/* Botão de Cadastro */}
           <Button
             variant="primary"
             className="relative flex items-center justify-center mt-2"
