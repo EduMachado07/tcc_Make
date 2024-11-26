@@ -20,7 +20,7 @@ const Tipo_Usuario = () => {
 
   // ENVIA PARA PAGINA DO USUARIO ESCOLHIDO
   function EnviarUsuario() {
-    setEtapa(4);
+    setEtapa(3);
     // VERIFICA QUAL O USUARIO E REDIRECIONA PARA A PAGINA
     if (user === "cliente") {
       // GUARDA O TIPO DO USUARIO NO LOCAL STORAGE

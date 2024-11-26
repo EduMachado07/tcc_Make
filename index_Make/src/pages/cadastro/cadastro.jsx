@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import { motion } from "framer-motion";
+import { Label } from "@/components/ui/label";
+import logo from "../../assets/logoHubflow.png";
 
 const Cadastro = () => {
   return (
@@ -10,20 +11,26 @@ const Cadastro = () => {
       <section className="bg-colorPrimary w-2/4 max-sm:hidden h-full rounded-l-md relative flex justify-center items-center">
         <Link
           to={"/"}
-          className="absolute top-5 left-3 text-xl font-bold text-slate-100"
+          className="absolute top-3 left-2 text-xl font-bold text-slate-100"
         >
-          -- Hub<span>Flow</span> --
+          <div className="w-28 h-24">
+            <img
+              src={logo}
+              alt="Hubflow"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </Link>
 
-        <div className="w-3/4">
-          <h1 className="text-2xl text-center text-slate-100">
+        <div className="w-3/4 flex flex-col">
+          <Label size="titleLg" className="capitalize text-slate-100">
             Dê seus primeiros passos!
-          </h1>
-          <p className="text-left text-slate-100">
+          </Label>
+          <Label size="large" className="text-left text-slate-100">
             Preencha todos os campos com as suas informações, e desfrute do
             melhor sistema de gerenciamento de serviços para pequenas e grandes
             empresas.
-          </p>
+          </Label>
         </div>
       </section>
 

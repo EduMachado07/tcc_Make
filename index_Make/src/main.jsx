@@ -5,6 +5,7 @@ import {
   createBrowserRouter,
   RouterProvider,
   Navigate,
+  useParams,
 } from "react-router-dom";
 
 import { AnimatePresence } from "framer-motion";
@@ -17,13 +18,15 @@ import Email from "./pages/cadastro/email.jsx";
 import Confirma_Email from "./pages/cadastro/confirmaEmail.jsx";
 import Tipo_Usuario from "./pages/cadastro/tipoUsuario.jsx";
 import Cliente from "./pages/cadastro/cliente.jsx";
-import Empresas from "./pages/negocios.jsx";
-import Empresa from "./pages/cadastro/empresa";
+import CadastroEmpresa from "./pages/cadastro/empresa";
 import Endereco from "./pages/cadastro/endereco";
 import Senha from "./pages/cadastro/Senha";
 import Informacoes from "./pages/cadastro/informacoes";
 import Erro from "./pages/erro";
 import Landing from "./pages/landing";
+import TermosUso from "./pages/termosUso";
+import Empresa from "./pages/empresa";
+import ListaEmpresas from "./pages/listaEmpresas";
 
 // --------- PROTECAO PARA CADASTRO ------------
 // COMPONENTE REDIRECIONA PARA PAGINA INICIAL
@@ -32,11 +35,11 @@ import { authProtecao_Rotas } from "./context/authProtecao_rotas.ts";
 const ProtecaoRotas = ({ pagina, etapa }) => {
   const etapaAtual = authProtecao_Rotas((state) => state.etapa);
 
-  if (etapaAtual > 1 && etapa < 2) {
-    return <Navigate to="/cadastro/validacao" replace />;
-  } else if (etapaAtual > 2 && etapa === 2) {
-    return <Navigate to="/cadastro/tipo-usuario" replace />;
-  }
+  // if (etapaAtual > 1 && etapa < 2) {
+  //   return <Navigate to="/cadastro/validacao" replace />;
+  // } else if (etapaAtual > 2 && etapa === 2) {
+  //   return <Navigate to="/cadastro/tipo-usuario" replace />;
+  // }
 
   if (etapaAtual >= etapa) {
     return pagina;
@@ -47,6 +50,8 @@ const ProtecaoRotas = ({ pagina, etapa }) => {
 
 // --------- COMPONENTE PARA ROTAS DA APLICACAO ------------
 const Rotas = () => {
+  const { empresa } = authProtecao_Rotas();
+
   const routes = createBrowserRouter([
     {
       path: "/",
@@ -57,8 +62,17 @@ const Rotas = () => {
           element: <Landing />,
         },
         {
-          path: "/empresas",
-          element: <Empresas />,
+          path: "/lista-empresas",
+          element: <ListaEmpresas />,
+        },
+        {
+          // path: `/empresas/${empresa}`,
+          path: `/teste`,
+          element: <Empresa />,
+        },
+        {
+          path: "/termos-uso",
+          element: <TermosUso />,
         },
       ],
     },
@@ -78,33 +92,33 @@ const Rotas = () => {
           path: "email",
           element: <ProtecaoRotas pagina={<Email />} etapa={1} />,
         },
-        {
-          path: "validacao",
-          element: <ProtecaoRotas pagina={<Confirma_Email />} etapa={2} />,
-        },
+        // {
+        //   path: "validacao",
+        //   element: <ProtecaoRotas pagina={<Confirma_Email />} etapa={2} />,
+        // },
         {
           path: "tipo-usuario",
-          element: <ProtecaoRotas pagina={<Tipo_Usuario />} etapa={3} />,
+          element: <ProtecaoRotas pagina={<Tipo_Usuario />} etapa={2} />,
         },
         {
           path: "cadastro-cliente",
-          element: <ProtecaoRotas pagina={<Cliente />} etapa={4} />,
+          element: <ProtecaoRotas pagina={<Cliente />} etapa={3} />,
         },
         {
           path: "cadastro-empresa",
-          element: <ProtecaoRotas pagina={<Empresa />} etapa={4} />,
+          element: <ProtecaoRotas pagina={<CadastroEmpresa />} etapa={3} />,
         },
         {
           path: "cadastro-endereco",
-          element: <ProtecaoRotas pagina={<Endereco />} etapa={5} />,
+          element: <ProtecaoRotas pagina={<Endereco />} etapa={4} />,
         },
         {
           path: "cadastro-senha",
-          element: <ProtecaoRotas pagina={<Senha />} etapa={6} />,
+          element: <ProtecaoRotas pagina={<Senha />} etapa={5} />,
         },
         {
           path: "informacoes",
-          element: <ProtecaoRotas pagina={<Informacoes />} etapa={7} />,
+          element: <ProtecaoRotas pagina={<Informacoes />} etapa={6} />,
         },
       ],
     },

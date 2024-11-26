@@ -9,13 +9,13 @@ type AuthStore = {
   numero: number | null;
   senha: string | null;
   empresa: string | null;
-
   estado: string | null;
   cidade: string | null;
   bairro: string | null;
   rua: string | null;
-
   user: string | null;
+  cpf: number | null;
+  cnpj: number | null;
 
   setUserInfo: (field: keyof Omit<AuthStore, 'setUserInfo'>, value: number | string | null) => void;
   removeUserInfo: (field: keyof Omit<AuthStore, 'setUserInfo' | 'deleteUserInfo'>) => void;
@@ -48,6 +48,8 @@ export const authCadastro = create<AuthStore>((set) => {
   const rua = getFromLocalStorage("rua") || null;
   const empresa = getFromLocalStorage("empresa") || null;
   const user = getFromLocalStorage("user") || null;
+  const cpf = getFromLocalStorage("cpf") || null;
+  const cnpj = getFromLocalStorage("cnpj") || null;
 
   return {
     email,
@@ -63,13 +65,15 @@ export const authCadastro = create<AuthStore>((set) => {
     cidade,
     bairro,
     rua,
+    cpf,
+    cnpj,
 
     setUserInfo: (field, value) => {
-      localStorage.setItem(field, JSON.stringify(value)); 
+      localStorage.setItem(field, JSON.stringify(value));
       set({ [field]: value });
     },
     removeUserInfo: (field) => {
-      localStorage.removeItem(field); 
+      localStorage.removeItem(field);
       set({ [field]: null });
     },
   };

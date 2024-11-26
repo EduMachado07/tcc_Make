@@ -9,6 +9,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 // -------- ( MATERIAL UI )------------
 import CircularProgress from "@mui/material/CircularProgress";
 // -------- COMPONENTE DE ERRO ----------
@@ -19,6 +20,7 @@ import { motion } from "framer-motion";
 const Email = () => {
   // ESTADOS DA PAGINA
   const [email, setEmail] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
   const [erro, setErro] = useState("");
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
   const navigate = useNavigate();
@@ -32,6 +34,10 @@ const Email = () => {
       inputEmail.current.focus();
     }
   }, []);
+
+  const handleChecked = (checked) => {
+    setIsChecked(checked); // Atualiza com o valor booleano
+  };
 
   // ENVIA INFORMACOES DO FORMULARIO
   async function EnviarFormulario(event) {
@@ -70,7 +76,7 @@ const Email = () => {
       authCadastro.getState().setUserInfo("email", email);
       // AVANCA PAGINA
       setEtapa(2);
-      navigate("../validacao");
+      navigate("../tipo-usuario");
     } catch (error) {
       console.error("Erro na requisição:", error);
       navigate("../../erro");
@@ -137,10 +143,32 @@ const Email = () => {
               onChange={(event) => setEmail(event.target.value)}
             />
           </div>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={isChecked}
+              onCheckedChange={(checked) => handleChecked(checked)}
+            />
+            <Label>
+              Eu li e concordo com os{" "}
+              <Link
+                to="/termos-uso"
+                className={buttonVariants({
+                  variant: "link",
+                  color: "secondary",
+                  size: "link",
+                })}
+              >
+                Termos de Uso
+              </Link>
+            </Label>
+          </div>
         </div>
         {/* BOTAO CADASTRAR */}
         <div className="w-3/4 flex flex-col">
-          <Button variant="primary" disabled={!email || btnLoading_Submit}>
+          <Button
+            variant="primary"
+            disabled={!email || btnLoading_Submit || !isChecked}
+          >
             {btnLoading_Submit ? (
               <CircularProgress
                 size={20}
@@ -169,15 +197,14 @@ const Email = () => {
           </div>
         </div>
         {/* SEPARADOR */}
-        <div className="w-3/4 flex justify-center items-center relative mt-3 mb-2">
+        {/* <div className="w-3/4 flex justify-center items-center relative mt-3 mb-2">
           <Separator />
           <p className="px-6 absolute bg-colorBack">ou</p>
         </div>
-        {/* BOTOES CADASTRO GOOGLE E FACEBOOK */}
         <div className="w-3/4 flex flex-col gap-3">
           <Button>Login com Google</Button>
           <Button>Login com Facebook</Button>
-        </div>
+        </div> */}
       </form>
     </motion.div>
   );

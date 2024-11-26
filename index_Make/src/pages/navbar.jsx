@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import logo from "../assets/logoHubflow.png";
 
 const Navbar = () => {
   const { resetEtapa } = authProtecao_Rotas();
@@ -26,28 +27,38 @@ const Navbar = () => {
     navigate("/cadastro");
   }
   return (
-    <div className="bg-colorPrimary w-full h-16 inline-flex justify-between items-center px-8">
-      <Link
-        to="/"
-        className="text-3xl text-slate-100 font-medium hover:scale-105 transition ease-in duration-100"
-      >
-        HubFlow
+    <div className="bg-colorPrimary w-full inline-flex justify-between items-center py-1.5 px-8 m-0 max-sm:px-5">
+      <Link to="/">
+        <div className="w-16 h-12">
+          <img src={logo} alt="" className="w-full h-full object-cover" />
+        </div>
       </Link>
       {/* PAGINAS */}
-      <section className="flex items-center gap-8">
+      <section className="flex items-center gap-8 max-sm:gap-4">
         <div className="flex gap-4 max-sm:hidden">
           <Link
             className=" text-slate-300 font-medium text-base hover:text-slate-50 hover:underline underline-offset-4"
-            to="/empresas"
+            to="/lista-empresas"
           >
             Empresas
           </Link>
           <Link
             className=" text-slate-300 font-medium text-base hover:text-slate-50 hover:underline underline-offset-4"
-            to="/empresas"
+            to="/"
           >
             Sobre
           </Link>
+        </div>
+        <div className="flex gap-2 max-sm:gap-0.5">
+          <Link to="/login">
+            <Button variant="noneOutline" className="mb-0">
+              Login
+            </Button>
+          </Link>
+
+          <Button variant="outline" className="mb-0" onClick={Cadastro}>
+            Cadastro
+          </Button>
         </div>
 
         {/* PERFIL DO USUARIO */}
@@ -68,7 +79,7 @@ const Navbar = () => {
               <DropdownMenuSeparator />
               <div className="sm:hidden">
                 <DropdownMenuItem>
-                  <Link to="/empresas" className="w-full">
+                  <Link to="/lista-empresas" className="w-full">
                     Empresas
                   </Link>
                 </DropdownMenuItem>
@@ -139,15 +150,45 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <div className="flex gap-2">
-            <Link to="/login">
-              <Button variant="noneOutline" className="mb-0">
-                Login
-              </Button>
-            </Link>
-            <Button variant="outline" className="mb-0" onClick={Cadastro}>
-              Cadastro
-            </Button>
+          <div className="sm:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-7 stroke-slate-50"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                  />
+                </svg>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="mr-6 w-48">
+                {/* PAGINAS PARA MOBILE */}
+                <div className="sm:hidden">
+                  <DropdownMenuItem>
+                    <Link to="/lista-empresas" className="w-full">
+                      Empresas
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="/" className="w-full">
+                      Planos
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="/" className="w-full">
+                      Sobre
+                    </Link>
+                  </DropdownMenuItem>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
       </section>

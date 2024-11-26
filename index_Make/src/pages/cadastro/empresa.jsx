@@ -11,11 +11,13 @@ import CircularProgress from "@mui/material/CircularProgress";
 // ----- BIBLIOTECA DE ANIMACAO ------
 import { motion } from "framer-motion";
 
-const Empresa = () => {
+const CadastroEmpresa = () => {
   // ESTADOS
   const [nome, setNome] = useState("");
   const [empresa, setEmpresa] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [cnpj, setCnpj] = useState("");
   const navigate = useNavigate();
   const [btnLoading_Submit, set_btnLoading_Submit] = useState(false);
 
@@ -63,6 +65,52 @@ const Empresa = () => {
     setEmpresa(formattedValue);
   };
 
+  // FORMATA CAMPO CPF
+  const formatCPF = (value) => {
+    // Remove todos os caracteres não numéricos
+    value = value.replace(/\D/g, "");
+
+    // Aplica a máscara de CPF: 000.000.000-00
+    if (value.length <= 11) {
+      value = value.replace(/(\d{3})(\d)/, "$1.$2");
+      value = value.replace(/(\d{3})(\d)/, "$1.$2");
+      value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    }
+
+    return value;
+  };
+  const handleChangeCpf = (e) => {
+    const formattedCPF = formatCPF(e.target.value);
+    setCpf(formattedCPF);
+  };
+  // FORMATA CAMPO CNPJ
+  const formatCNPJ = (value) => {
+    // Remove todos os caracteres não numéricos
+    value = value.replace(/\D/g, "");
+
+    // Aplica a máscara de CNPJ: 00.000.000/0000-00
+    if (value.length <= 14) {
+      value = value.replace(/(\d{2})(\d)/, "$1.$2");
+      value = value.replace(/(\d{3})(\d)/, "$1.$2");
+      value = value.replace(/(\d{3})(\d)/, "$1/$2");
+      value = value.replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+    }
+
+    return value;
+  };
+  const handleChangeCnpj = (e) => {
+    const formattedCNPJ = formatCNPJ(e.target.value);
+    setCnpj(formattedCNPJ);
+  };
+
+  // FUNCOES PARA RETIRAR CARACTERES
+  const removeCPFMask = (cpf) => {
+    return cpf.replace(/\D/g, ""); // Remove tudo que não for número
+  };
+  const removeCNPJMask = (cnpj) => {
+    return cnpj.replace(/\D/g, ""); // Remove tudo que não for número
+  };
+
   // INICIA PAGINA COM INPUT FOCADO
   const inputNome = useRef(null);
   useEffect(() => {
@@ -74,14 +122,18 @@ const Empresa = () => {
   // ------ ENVIA FORMULARIO -------
   async function EnviarFormulario(event) {
     event.preventDefault();
+    const cpfSemMascara = removeCPFMask(cpf);
+    const cnpjSemMascara = removeCNPJMask(cnpj);
 
     set_btnLoading_Submit(true);
     // GUARDA DADOS NO CONTEXTO
     authCadastro.getState().setUserInfo("nome", nome);
     authCadastro.getState().setUserInfo("empresa", empresa);
     authCadastro.getState().setUserInfo("tel", telefone);
+    authCadastro.getState().setUserInfo("cpf", cpfSemMascara);
+    authCadastro.getState().setUserInfo("cnpj", cnpjSemMascara);
     // CONTEXTO DE PROTECAO DE ROTAS
-    setEtapa(5);
+    setEtapa(4);
     navigate("../cadastro-endereco");
 
     set_btnLoading_Submit(false);
@@ -96,10 +148,9 @@ const Empresa = () => {
       className="h-full"
     >
       <form
-        className=" w-full h-full flex flex-col justify-center items-center gap-6 px-4"
+        className="w-full h-full flex flex-col justify-center items-center gap-6 px-4"
         onSubmit={EnviarFormulario}
       >
-        {/* CAMPO NOME DO USUARIO */}
         <div className="flex flex-col w-3/4 gap-3">
           <Link to="/" className="sm:hidden mb-5 flex items-center gap-1">
             <svg
@@ -119,6 +170,7 @@ const Empresa = () => {
             <Label size="large">Voltar</Label>
           </Link>
           <Label size="subtitle">Informações do usuário</Label>
+          {/* CAMPO NOME DO USUARIO */}
           <Label size="medium">Nome Completo</Label>
           <div className="relative">
             <svg
@@ -147,9 +199,39 @@ const Empresa = () => {
             />
           </div>
         </div>
-        {/* CAMPO NOME DO USUARIO */}
+
+        {/* CAMPO CPF DO USUARIO */}
         <div className="flex flex-col w-3/4 gap-3">
-          {/* COMPONENTE MENSAGEM DE ERRO */}
+          <Label size="medium">CPF</Label>
+          <div className="relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-5 stroke-colorPrimary absolute inset-y-2 left-1.5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+              />
+            </svg>
+
+            <Input
+              variant="inputIcon"
+              type="text"
+              value={cpf}
+              placeholder="Número do seu CPF"
+              onChange={handleChangeCpf}
+              maxLength={14}
+            />
+          </div>
+        </div>
+
+        {/* CAMPO NOME DA EMPRESA */}
+        <div className="flex flex-col w-3/4 gap-3">
           <Label size="medium">Nome da Empresa</Label>
           <div className="relative">
             <svg
@@ -177,6 +259,37 @@ const Empresa = () => {
             />
           </div>
         </div>
+
+        {/* CAMPO CNPJ DA EMPRESA */}
+        <div className="flex flex-col w-3/4 gap-3">
+          <Label size="medium">CNPJ</Label>
+          <div className="relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-5 stroke-colorPrimary absolute inset-y-2 left-1.5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"
+              />
+            </svg>
+
+            <Input
+              variant="inputIcon"
+              type="text"
+              value={cnpj}
+              placeholder="CNPJ da empresa"
+              onChange={handleChangeCnpj}
+              maxLength={18}
+            />
+          </div>
+        </div>
+
         {/* CAMPO TELEFONE */}
         <div className="flex flex-col w-3/4 gap-3">
           <Label size="medium">Telefone</Label>
@@ -208,9 +321,13 @@ const Empresa = () => {
             variant="primary"
             disabled={
               !nome ||
+              !cpf ||
+              cpf.length !== 14 ||
+              !empresa ||
+              !cnpj ||
+              cnpj.length !== 18 ||
               !telefone ||
               telefone.length !== 15 ||
-              !empresa ||
               btnLoading_Submit
             }
           >
@@ -230,4 +347,4 @@ const Empresa = () => {
   );
 };
 
-export default Empresa;
+export default CadastroEmpresa;

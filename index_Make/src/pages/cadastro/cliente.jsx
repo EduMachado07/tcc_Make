@@ -119,7 +119,7 @@ const Cliente = () => {
     authCadastro.getState().setUserInfo("dataNascimento", dataFormatada);
 
     // AVANCA PAGINA
-    setEtapa(5);
+    setEtapa(4);
     navigate("../cadastro-endereco");
 
     set_btnLoading_Submit(false);

@@ -58,7 +58,7 @@ const Senha = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     authCadastro.getState().setUserInfo("senha", data.senha);
     navigate("../informacoes");
-    setEtapa(7);
+    setEtapa(6);
     set_btnLoading_Submit(false);
   };
 
@@ -107,7 +107,7 @@ const Senha = () => {
             </svg>
             <Input
               variant="inputIcon"
-              type="text"
+              type="password"
               {...register("senha", {
                 validate: validatePassword,
               })}
@@ -116,22 +116,10 @@ const Senha = () => {
           <Label size="large" className="mt-3">
             Sua senha deve ter pelo menos:
           </Label>
-          <div className="flex items-center space-x-2">
-            <Checkbox readOnly checked={rules.minLength} />
-            <Label size="medium">Oito caracteres</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox readOnly checked={rules.hasUpperCase} />
-            <Label size="medium">Um caractere maiúsculo</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox readOnly checked={rules.hasSymbol} />
-            <Label size="medium">Um caractere especial</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox readOnly checked={rules.hasNumber} />
-            <Label size="medium">Um número</Label>
-          </div>
+          <Label size="medium">Oito caracteres</Label>
+          <Label size="medium">Um caractere maiúsculo</Label>
+          <Label size="medium">Um caractere especial</Label>
+          <Label size="medium">Um número</Label>
 
           <Button
             variant="primary"

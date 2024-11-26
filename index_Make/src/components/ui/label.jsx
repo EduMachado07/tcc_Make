@@ -14,7 +14,8 @@ const labelVariants = cva(
         base: "max-sm:text-base text-lg",
         large: "text-lg",
         subtitle: "max-sm:text-2xl text-4xl mb-2",
-        title: "text-3xl",
+        title: "text-3xl font-bold capitalize",
+        titleLg: "text-4xl font-bold capitalize",
         largeTitle: "text-5xl max-sm:text-4xl font-bold",
       },
       color: {
@@ -23,6 +24,7 @@ const labelVariants = cva(
         colorText: "text-colorText",
         colorText_Bold: "text-colorText_Bold",
         alert: "text-red-500",
+        white: "text-zinc-50",
       },
     },
     defaultVariants: {

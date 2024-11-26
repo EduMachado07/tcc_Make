@@ -6,27 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import Footer from "./footer";
 
 const Landing = () => {
-  const footerPages = [
-    {
-      title: "Sobre",
-      link: "/",
-    },
-    {
-      title: "Termos de Serviço",
-      link: "/",
-    },
-    {
-      title: "Política de Privacidade",
-      link: "/",
-    },
-    {
-      title: "Contato",
-      link: "/",
-    },
-  ];
-
   const Cards = [
     {
       title: "Porque usar o HubFlow?",
@@ -46,14 +28,14 @@ const Landing = () => {
   ];
 
   return (
-    <div className="w-full flex flex-col items-center gap-20 overflow-hidden">
+    <div className="bg-colorBack w-full flex flex-col items-center gap-20 overflow-hidden pb-12">
       <section className="bg-black w-full h-75vh max-sm:h-80 relative">
         <img
           src={background}
           alt="fundo"
           className="w-full h-full object-cover"
         />
-        <section className="bg-gradient-to-t from-zinc-900 from-20% max-sm:from-25% to-transparent absolute top-0 w-full h-full flex flex-col justify-center px-16 max-sm:px-11 pt-16">
+        <section className="bg-gradient-to-t from-zinc-900 from-20% max-sm:from-25% to-transparent absolute top-0 w-full h-full flex flex-col justify-center px-16 max-sm:px-10 max-sm:pt-12 pt-14">
           <motion.div
             className="flex flex-col gap-4"
             initial={{ opacity: 0, x: -50 }}
@@ -69,9 +51,11 @@ const Landing = () => {
               clientes
             </Label>
             <div className="flex items-center gap-4">
-              <Button size="lg" variant="outline">
-                Teste agora
-              </Button>
+              <Link to="/cadastro">
+                <Button size="lg" variant="outline">
+                  Teste agora
+                </Button>
+              </Link>
               <Link className="text-colorSecondary font-semibold flex items-center gap-1 underline-offset-4 hover:underline">
                 Saber mais
                 <svg
@@ -96,7 +80,7 @@ const Landing = () => {
 
       {/* REDIRECIONAMENTO DE USUARIOS */}
       <motion.section
-        className="w-full flex justify-center px-20 max-sm:px-5 gap-24 max-sm:gap-5"
+        className="w-full flex justify-center px-20 max-sm:px-3 gap-24 max-sm:gap-3"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -182,30 +166,6 @@ const Landing = () => {
           </motion.div>
         </section>
       ))}
-
-      {/* FOOTER */}
-      <footer className="bg-colorPrimary w-full p-10 flex flex-col gap-7">
-        <div className="max-sm:flex flex-col">
-          {footerPages.map((item, index) => (
-            <Link
-              key={index}
-              to={item.link}
-              className="text-slate-300 w-full text-base mr-5 hover:text-slate-50"
-            >
-              {item.title}
-            </Link>
-          ))}
-        </div>
-        <Separator color="colorBack" />
-        <div>
-          <Link to="/" className="text-3xl text-slate-100 font-medium">
-            HubFlow
-          </Link>
-          <Label className="text-slate-300 ml-3">
-            &copy; 2024 HubFlow. Todos os direitos reservados
-          </Label>
-        </div>
-      </footer>
     </div>
   );
 };

@@ -14,7 +14,7 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "border border-2 text-slate-100 hover:bg-slate-100 hover:text-colorPrimary",
+          "border border-2 text-slate-100 hover:bg-slate-100 hover:text-colorPrimary font-semibold",
         noneOutline:
           "border-colorPrimary border-2 text-slate-100 hover:bg-slate-100 hover:text-colorPrimary",
         secondary:
@@ -29,11 +29,12 @@ const buttonVariants = cva(
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
-        link: "py-2 px-1 text-xs",
+        link: "py-2 px-1 text-sm",
       },
       color: {
         default: "text-colorPrimary",
         secondary: "text-colorSecondary",
+        outline: "border-colorPrimary",
       },
     },
     defaultVariants: {

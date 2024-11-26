@@ -127,7 +127,7 @@ const Endereco = () => {
     authCadastro.getState().setUserInfo("cep", data.cep);
     authCadastro.getState().setUserInfo("numero", data.numero);
     // AVANCA PAGINA
-    setEtapa(6);
+    setEtapa(5);
     navigate("../cadastro-senha");
 
     set_btnLoading_Submit(false);

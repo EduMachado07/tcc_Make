@@ -3,13 +3,14 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { authLogin } from "../context/authLogin";
 import validator from "validator";
+
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import CircularProgress from "@mui/material/CircularProgress";
 import Erro from "@/components/componentes/erro";
 import { motion } from "framer-motion";
+import logo from "../assets/logoHubflow.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -62,7 +63,11 @@ const Login = () => {
         if (error.response.status === 401) {
           setErro("Email ou senha inválidos");
         } else {
-          setErro(`Erro do servidor: ${error.response.data.message || 'Erro desconhecido'}`);
+          setErro(
+            `Erro do servidor: ${
+              error.response.data.message || "Erro desconhecido"
+            }`
+          );
         }
       } else if (error.message === "Tempo limite excedido") {
         setErro("O servidor demorou muito para responder. Tente novamente.");
@@ -80,19 +85,26 @@ const Login = () => {
       <div className="bg-colorPrimary w-2/4 max-sm:hidden h-full rounded-l-md relative flex justify-center items-center">
         <Link
           to={"/"}
-          className="absolute top-5 left-3 text-xl font-bold text-blue-50"
+          className="absolute top-3 left-2 text-xl font-bold text-blue-50"
         >
-          -- Hub<span>Flow</span> --
+          <div className="w-28 h-24">
+            <img
+              src={logo}
+              alt="Hubflow"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </Link>
 
-        <div className="w-3/4">
-          <h1 className="text-2xl text-center text-slate-100">
+        <div className="w-3/4 gap-2 flex flex-col">
+          <Label size="titleLg" className="text-slate-100 capitalize">
             Seja bem-vindo!
-          </h1>
-          <p className="text-center text-slate-100">
-            Estamos felizes em recebe-lo novamente em nosso sistema, entre com o
-            seu login e senha, e encontre os melhores estabelecimentos.
-          </p>
+          </Label>
+          <Label size="large" className="text-colorBack">
+            Estamos felizes em recebê-lo novamente em nosso sistema!! Entre com
+            o seu login e senha, e encontre os melhores estabelecimentos para
+            agendar ainda hoje o seu serviço
+          </Label>
         </div>
       </div>
 
@@ -104,7 +116,7 @@ const Login = () => {
         transition={{ duration: 0.3 }}
         method="post"
         onSubmit={EnviarFormulario}
-        className="w-2/4 max-sm:w-full px-4 h-full relative flex flex-col justify-center items-center gap-4"
+        className="w-2/4 px-4 h-full relative flex flex-col justify-center items-center gap-4 max-sm:w-full"
       >
         <div className="flex flex-col w-3/4 gap-3">
           <Link to="/" className="sm:hidden mb-5 flex items-center gap-1">
@@ -224,14 +236,14 @@ const Login = () => {
             </p>
           </div>
         </div>
-        <div className="w-3/4 flex justify-center items-center relative mt-3 mb-2">
+        {/* <div className="w-3/4 flex justify-center items-center relative mt-3 mb-2">
           <Separator />
           <p className="px-6 absolute bg-colorBack">ou</p>
         </div>
         <div className="w-3/4 flex flex-col gap-3">
           <Button>Login com Google</Button>
           <Button>Login com Facebook</Button>
-        </div>
+        </div> */}
       </motion.form>
     </div>
   );
