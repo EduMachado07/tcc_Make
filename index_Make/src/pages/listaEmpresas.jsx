@@ -93,7 +93,7 @@ const ListaEmpresas = () => {
                 key={servico.id}
                 className="flex justify-between items-center sm:hover:bg-zinc-300 py-1 px-3 rounded-sm sm:hover:scale-105 max-sm:px-0"
               >
-                <Label size="base" className="max-sm:hidden">
+                <Label size="base" color="colorText" className="max-sm:hidden">
                   {servico.service}
                 </Label>
 
@@ -101,13 +101,20 @@ const ListaEmpresas = () => {
                   <div className="flex flex-col sm:hidden">
                     <Label
                       size="large"
+                      color="colorText"
                       className="overflow-hidden text-ellipsis line-clamp-1"
                     >
                       {servico.service}
                     </Label>
-                    <Label size="large">R$ {servico.value.toFixed(2)}</Label>
+                    <Label size="large" color="colorText">
+                      R$ {servico.value.toFixed(2)}
+                    </Label>
                   </div>
-                  <Label size="base" className="max-sm:hidden">
+                  <Label
+                    size="base"
+                    color="colorText"
+                    className="max-sm:hidden"
+                  >
                     R$ {servico.value.toFixed(2)}
                   </Label>
                   <Button

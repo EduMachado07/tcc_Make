@@ -27,6 +27,7 @@ import Landing from "./pages/landing";
 import TermosUso from "./pages/termosUso";
 import Empresa from "./pages/empresa";
 import ListaEmpresas from "./pages/listaEmpresas";
+import PerfilEmpresa from "./pages/perfilEmpresa";
 
 // --------- PROTECAO PARA CADASTRO ------------
 // COMPONENTE REDIRECIONA PARA PAGINA INICIAL
@@ -50,8 +51,6 @@ const ProtecaoRotas = ({ pagina, etapa }) => {
 
 // --------- COMPONENTE PARA ROTAS DA APLICACAO ------------
 const Rotas = () => {
-  const { empresa } = authProtecao_Rotas();
-
   const routes = createBrowserRouter([
     {
       path: "/",
@@ -73,6 +72,10 @@ const Rotas = () => {
         {
           path: "/termos-uso",
           element: <TermosUso />,
+        },
+        {
+          path: "/minha-empresa",
+          element: <PerfilEmpresa />,
         },
       ],
     },
