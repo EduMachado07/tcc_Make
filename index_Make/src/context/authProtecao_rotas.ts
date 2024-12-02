@@ -9,7 +9,7 @@ type AuthStore = {
 };
 
 export const authProtecao_Rotas = create<AuthStore>((set) => ({
-    etapa: 7,
+    etapa: 1,
     idEmpresa: JSON.parse(localStorage.getItem('idEmpresa') || 'null'),
     setIdEmpresa: (idEmpresa: number) => {
         localStorage.setItem('idEmpresa', JSON.stringify(idEmpresa));

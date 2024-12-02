@@ -6,11 +6,11 @@ const Footer = () => {
   const footerPages = [
     {
       title: "Empresas",
-      link: "/empresas",
+      link: "/lista-empresas",
     },
     {
       title: "Sobre",
-      link: "/",
+      link: "/sobre",
     },
     {
       title: "Termos de Serviço",

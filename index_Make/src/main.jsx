@@ -5,7 +5,6 @@ import {
   createBrowserRouter,
   RouterProvider,
   Navigate,
-  useParams,
 } from "react-router-dom";
 
 import { AnimatePresence } from "framer-motion";
@@ -15,7 +14,7 @@ import App from "./App.jsx";
 import Login from "./pages/login.jsx";
 import Cadastro from "./pages/cadastro/cadastro.jsx";
 import Email from "./pages/cadastro/email.jsx";
-import Confirma_Email from "./pages/cadastro/confirmaEmail.jsx";
+// import Confirma_Email from "./pages/cadastro/confirmaEmail.jsx";
 import Tipo_Usuario from "./pages/cadastro/tipoUsuario.jsx";
 import Cliente from "./pages/cadastro/cliente.jsx";
 import CadastroEmpresa from "./pages/cadastro/empresa";
@@ -28,6 +27,9 @@ import TermosUso from "./pages/termosUso";
 import Empresa from "./pages/empresa";
 import ListaEmpresas from "./pages/listaEmpresas";
 import PerfilEmpresa from "./pages/perfilEmpresa";
+import Agenda from "./pages/agenda";
+import PerfilClient from "./pages/perfilClient";
+import Sobre from "./pages/sobre";
 
 // --------- PROTECAO PARA CADASTRO ------------
 // COMPONENTE REDIRECIONA PARA PAGINA INICIAL
@@ -76,6 +78,18 @@ const Rotas = () => {
         {
           path: "/minha-empresa",
           element: <PerfilEmpresa />,
+        },
+        {
+          path: "/agenda",
+          element: <Agenda />,
+        },
+        {
+          path: "/meu-perfil",
+          element: <PerfilClient />,
+        },
+        {
+          path: "/sobre",
+          element: <Sobre />,
         },
       ],
     },

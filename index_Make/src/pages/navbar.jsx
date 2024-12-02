@@ -44,22 +44,24 @@ const Navbar = () => {
           </Link>
           <Link
             className=" text-slate-300 font-medium text-base hover:text-slate-50 hover:underline underline-offset-4"
-            to="/"
+            to="/sobre"
           >
             Sobre
           </Link>
         </div>
-        <div className="flex gap-2 max-sm:gap-0.5">
-          <Link to="/login">
-            <Button variant="noneOutline" className="mb-0">
-              Login
-            </Button>
-          </Link>
+        {!autenticacao && (
+          <div className="flex gap-2 max-sm:gap-0.5">
+            <Link to="/login">
+              <Button variant="noneOutline" className="mb-0">
+                Login
+              </Button>
+            </Link>
 
-          <Button variant="outline" className="mb-0" onClick={Cadastro}>
-            Cadastro
-          </Button>
-        </div>
+            <Button variant="outline" className="mb-0" onClick={Cadastro}>
+              Cadastro
+            </Button>
+          </div>
+        )}
 
         {/* PERFIL DO USUARIO */}
         {autenticacao ? (
@@ -84,12 +86,7 @@ const Navbar = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link to="/" className="w-full">
-                    Planos
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link to="/" className="w-full">
+                  <Link to="/sobre" className="w-full">
                     Sobre
                   </Link>
                 </DropdownMenuItem>
@@ -97,13 +94,25 @@ const Navbar = () => {
               </div>
               {/* PAGINA CONFORME TIPO DO USUARIO */}
               <DropdownMenuItem>
-                <Link to="/" className="w-full">
-                  {user.tipoUser === "admin" ? "Minha agenda" : "Minha empresa"}
+                <Link
+                  to={
+                    user.tipoUser === "admin" ? "/minha-empresa" : "/meu-perfil"
+                  }
+                  className="w-full"
+                >
+                  {user.tipoUser === "admin" ? "Minha empresa" : "Meu perfil"}
                 </Link>
               </DropdownMenuItem>
+              {user.tipoUser === "admin" && (
+                <DropdownMenuItem>
+                  <Link to="/agenda" className="w-full">
+                    Agenda
+                  </Link>
+                </DropdownMenuItem>
+              )}
               {/* CONFIGURACOES */}
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="font-medium">
+              {/* <DropdownMenuItem className="font-medium">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -126,7 +135,7 @@ const Navbar = () => {
                 <Link to="/" className="w-full">
                   Configurações
                 </Link>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem
                 className="text-red-600 font-medium"
                 onClick={Deslogar}

@@ -1,6 +1,12 @@
 import React from "react";
 import background from "../images/background.jpg";
-import rascunho from "../images/rascunhoImg.png";
+
+import img1 from "../assets/homepage.jpeg";
+import img2 from "../assets/homepage2.webp";
+import img3 from "../assets/homepage3.png";
+import empresa from "../assets/empresa.webp";
+import cliente from "../assets/cliente.jpg";
+
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -11,19 +17,22 @@ import Footer from "./footer";
 const Landing = () => {
   const Cards = [
     {
-      title: "Porque usar o HubFlow?",
-      description: "Texto aqui",
-      image: rascunho,
+      title: "Obtenha mais agendamentos ",
+      description:
+        "Obtenha mais agendamentos de forma rápida e fácil! Informe o serviço desejado e deixe-nos cuidar de todo o processo para você.",
+      image: img1,
     },
     {
-      title: "Porque usar o HubFlow?",
-      description: "Texto aqui",
-      image: rascunho,
+      title: "Atendimento no seu tempo!",
+      description:
+        "Escolha o dia e horário perfeito para você e garanta seu agendamento",
+      image: img2,
     },
     {
-      title: " HubFlow?",
-      description: "Texto aqui",
-      image: rascunho,
+      title: "Não Perca Tempo, Agende Seu Horário",
+      description:
+        "Atendimento rápido, eficiente e totalmente online. Agende com facilidade",
+      image: img3,
     },
   ];
 
@@ -80,16 +89,16 @@ const Landing = () => {
 
       {/* REDIRECIONAMENTO DE USUARIOS */}
       <motion.section
-        className="w-full flex justify-center px-20 max-sm:px-3 gap-24 max-sm:gap-3"
+        className="w-full flex justify-center px-20 max-sm:px-3 gap-32 max-sm:gap-3"
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         viewport={{ once: true, amount: 0.3 }}
       >
         <section className="w-2/4 h-85vh max-sm:h-full gap-2 py-8 px-14 max-sm:px-4 rounded-md bg-colorPrimary shadow-xl flex flex-col items-center">
-          <div className="w-full h-64 max-sm:hidden">
+          <div className="w-full h-72 max-sm:hidden">
             <img
-              src={rascunho}
+              src={cliente}
               alt=""
               className="w-full h-full object-cover rounded"
             />
@@ -99,20 +108,26 @@ const Landing = () => {
               <Label size="subtitle" className="text-slate-100">
                 Seja um cliente
               </Label>
-              <Label size="base" className="text-slate-100">
-                texto aqui
+              <Label className="text-slate-100 text-xl">
+                Agende seus serviços com facilidade e conveniência! Cadastre-se
+                agora e tenha acesso a profissionais de confiança ao alcance de
+                um clique.
               </Label>
             </div>
             <div>
-              <Button size="lg">Agendar Serviço</Button>
+              <Link to="/cadastro">
+                <Button size="lg" variant="outline">
+                  Agendar Serviço
+                </Button>
+              </Link>
             </div>
           </section>
         </section>
 
         <section className="w-2/4 h-85vh max-sm:h-full gap-2 py-8 px-14 max-sm:px-4 rounded-md bg-colorSecondary shadow-xl flex flex-col items-center">
-          <div className="w-full h-64 max-sm:hidden">
+          <div className="w-full h-72 max-sm:hidden">
             <img
-              src={rascunho}
+              src={empresa}
               alt=""
               className="w-full h-full object-cover rounded"
             />
@@ -122,12 +137,17 @@ const Landing = () => {
               <Label size="subtitle" className="text-slate-100">
                 Abra sua empresa
               </Label>
-              <Label size="base" className="text-slate-100">
-                texto aqui
+              <Label className="text-slate-100 text-xl font-semibold">
+                Destaque seus serviços e conquiste novos clientes! Cadastre sua
+                empresa e comece a receber agendamentos online hoje mesmo.
               </Label>
             </div>
             <div>
-              <Button size="lg">Testar agora</Button>
+              <Link to="/cadastro">
+                <Button size="lg" variant="outline">
+                  Testar agora
+                </Button>
+              </Link>
             </div>
           </section>
         </section>
@@ -136,13 +156,13 @@ const Landing = () => {
       {/* CARDS */}
       {Cards.map((item, index) => (
         <section
-          className={`w-full flex justify-center items-center gap-3 sm:gap-7 px-4 sm:px-24 py-5 ${
+          className={`w-full flex max-sm:flex-col justify-center items-center gap-3 sm:gap-24 px-4 sm:px-24 py-5 ${
             index % 2 === 0 ? "" : "flex-row-reverse"
           }`}
           key={index}
         >
           <motion.div
-            className="w-2/4 h-40 sm:h-96"
+            className="w-2/4 max-sm:w-full h-60 sm:h-96 rounded-md"
             initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -151,18 +171,20 @@ const Landing = () => {
             <img
               src={item.image}
               alt=""
-              className="w-full h-full object-cover rounded-md"
+              className="w-full h-full object-cover rounded-md shadow-2xl"
             />
           </motion.div>
           <motion.div
-            className="w-2/4 flex flex-col"
+            className="w-2/5 max-sm:w-full flex flex-col gap-5 max-sm:gap-3"
             initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             viewport={{ once: true, amount: 0.4 }}
           >
-            <Label size="subtitle">{item.title}</Label>
-            <Label size="base">{item.description}</Label>
+            <Label className="text-5xl max-sm:text-4xl font-bold max-sm:text-">
+              {item.title}
+            </Label>
+            <Label className="text-2xl text-wrap ">{item.description}</Label>
           </motion.div>
         </section>
       ))}

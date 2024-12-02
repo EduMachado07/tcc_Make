@@ -42,10 +42,10 @@ const Tipo_Usuario = () => {
       className="h-full 600 flex justify-center items-center"
     >
       <section className="w-3/4 flex flex-col gap-6 px-4">
-        {/* CARD CLIENTE */}
         <h1 className="text-3xl text-colorPrimary font-semibold">
           Quem você é?
         </h1>
+        {/* CARD CLIENTE */}
         <div
           className={`flex rounded-sm shadow-md justify-around items-center around p-3 ${
             user === "cliente"
@@ -104,9 +104,9 @@ const Tipo_Usuario = () => {
             <h1 className="text-xl text-colorPrimary">Empresa</h1>
             <hr className="border-1 border-colorPrimary mb-2" />
             <p className="text-sm">
-              Se você quer descobrir empresas e agendar um horário com
-              profissionais da beleza, a qualquer hora e em qualquer lugar, essa
-              é a sua melhor opção.
+              Se você quer abrir a sua empresa e conectar os seus serviços e
+              funcionários com os seus clientes, para facilitar agendamentos e
+              sua organização, essa é a sua melhor opção.
             </p>
           </div>
         </div>

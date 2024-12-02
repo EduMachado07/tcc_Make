@@ -123,16 +123,15 @@ const Informacoes = () => {
       });
 
       navigate("/");
+      // resetEtapa();
     } catch (err) {
       console.error("Erro ao criar usuário:", err);
       if (err.response) {
         console.error("Erro do servidor:", err.response.data);
-        // Aqui você pode mostrar uma mensagem mais específica para o usuário
-        alert(err.response.data.message || "Erro ao cadastrar usuário");
       }
       navigate("../../erro");
     } finally {
-      resetEtapa();
+      // resetEtapa();
       limparDadosCadastro();
       set_btnLoading_Submit(false);
     }

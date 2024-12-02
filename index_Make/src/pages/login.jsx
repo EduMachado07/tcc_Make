@@ -191,7 +191,7 @@ const Login = () => {
                 placeholder="user@123"
                 onChange={(event) => setSenha(event.target.value)}
               />
-              <div className="w-full text-right">
+              {/* <div className="w-full text-right">
                 <Link
                   className={buttonVariants({
                     variant: "link",
@@ -201,7 +201,7 @@ const Login = () => {
                 >
                   Esqueci a senha
                 </Link>
-              </div>
+              </div> */}
             </div>
           </>
         </div>
@@ -220,9 +220,9 @@ const Login = () => {
               "Entrar"
             )}
           </Button>
-          <div className="w-full text-center">
+          <div className="text-center mt-1.5">
             <p className="text-sm">
-              Não possui uma conta?{" "}
+              Não possui uma conta?
               <Link
                 to="/cadastro"
                 className={buttonVariants({

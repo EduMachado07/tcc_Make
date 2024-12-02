@@ -59,19 +59,19 @@ const Email = () => {
       setTimeout(() => reject(new Error("Tempo limite excedido")), timeout)
     );
     try {
-      const res = await Promise.race([
-        axios.get(
-          "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/usuarios"
-        ),
-        timeoutPromise,
-      ]);
+      // const res = await Promise.race([
+      //   axios.get(
+      //     "https://66d3463e184dce1713cfc9ba.mockapi.io/usuario/usuarios"
+      //   ),
+      //   timeoutPromise,
+      // ]);
 
       // VERIFICA SE JA EXISTE USUARIO COM O EMAIL INSERIDO
-      const usuarioExistente = res.data.find((user) => user.email === email);
-      if (usuarioExistente) {
-        setErro("Email já possui uma conta");
-        return;
-      }
+      // const usuarioExistente = res.data.find((user) => user.email === email);
+      // if (usuarioExistente) {
+      //   setErro("Email já possui uma conta");
+      //   return;
+      // }
       // ADICIONA EMAIL NO LOCAL STORAGE
       authCadastro.getState().setUserInfo("email", email);
       // AVANCA PAGINA
@@ -180,9 +180,9 @@ const Email = () => {
             )}
           </Button>
           {/* LINK PARA PAGINA LOGIN */}
-          <div className="w-full text-center">
-            <p className="text-sm mt-1.5">
-              Já tem uma conta?{" "}
+          <div className="w-full text-center mt-1.5">
+            <p className="text-sm">
+              Já tem uma conta?
               <Link
                 to="/login"
                 className={buttonVariants({
